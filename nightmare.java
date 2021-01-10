@@ -53,7 +53,7 @@ public class nightmare { // BE WARNED THAT THIS TAKES A LOT OF TIME
 		b_tot = b_tot.add(x(b));
 		e_avg = e_tot.doubleValue() / n.doubleValue();
 		b_avg = b_tot.doubleValue() / n.doubleValue();
-		if (e > rbe) {
+		if (e > ree) {
 			rbe = b;
 			ree = e;
 		}
