@@ -37,6 +37,13 @@ public class MarkovChain{
 		return res;
 	}
 	
+	static String num(int n) {
+		if (n == 21) return "9 + 10";
+		if (n == 4) return n + " (minus 1 that's 3 quick maths)";
+		if (n == 69) return n + " (nice)";
+		return "" + n;
+	}
+	
 	public static void main (String[] args) throws FileNotFoundException, IOException {
 		Scanner fileReader = new Scanner(new File("Thing.in"));
 
@@ -79,13 +86,13 @@ public class MarkovChain{
 		Scanner x = new Scanner(System.in);
 		while (x.hasNextShort()) {
 			int n = x.nextShort();
-			if (n == 0) {
+			if (n <= 0) {
 				System.out.println("You really are an IDIOT");
 				continue;
 			}
 			int p = (int)(Math.random() * primers.size());
 			String primer = primers.get(p);
-			System.out.println("MARKOV CHAIN USING " + n + " TERMS AND STARTING WITH " + primer);
+			System.out.println("MARKOV CHAIN USING " + num(n) + " TERMS AND STARTING WITH " + primer);
 			ArrayList<String> res = run(primer, n);
 			for (int i = 0; i < res.size(); i++) {
 				String s = res.get(i);
