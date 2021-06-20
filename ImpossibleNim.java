@@ -60,7 +60,7 @@ public class ImpossibleNim { // WARNING - This game is impossible unless you cho
 					arr.set(x, num);
 					if (found) break;
 				}
-				System.out.println(x + " " + y);
+			//	System.out.println(x + " " + y);
 				if (found) {
 					System.out.println("COMP'ED " + Math.min(y, arr.get(x)) + " FROM PILE " + x);
 					arr.set(x, arr.get(x) - y);
