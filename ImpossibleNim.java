@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ImpossibleNim {
+public class ImpossibleNim { // WARNING - This game is impossible unless you choose correctly the player that goes first
 	public static void error() {
 		System.out.println("YOU IDIOT");
 	}
