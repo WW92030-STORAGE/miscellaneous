@@ -1,4 +1,4 @@
-hex <- function(n) {
+hex <- function(n) { # Change a byte integer into a 2 digit hexadecimal string
     n <- n %% 256
     p1 <- n %/% 16
     p2 <- n %% 16
@@ -11,8 +11,8 @@ hex <- function(n) {
     return(paste(c1, c2, sep = ""))
 }
 
-protogen <- function() { # Color generator method
-    rgb <- floor(runif(3, 0, 256))
+protogen <- function() { # Color generator function
+    rgb <- floor(runif(3, 0, 256)) # 3 random byte integers
     return(paste("\U0023", hex(rgb[1]), hex(rgb[2]), hex(rgb[3]), sep = ""))
 }
 
