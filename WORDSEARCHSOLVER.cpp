@@ -217,7 +217,7 @@ int main()
 
 
 
-/* EXAMPLE INPUT
+/* EXAMPLE INPUT (Source - Undertale)
 
 6 16 12
 GIASFCLFUBREHBER
