@@ -76,13 +76,6 @@ pair<pii, int> solve(vector<vector<char>>& board, string s1) {
         s = "";
         for (int j = 0; j < n; j++) s = s + "" + board[j][i];
         vector<ll> searched = search(s, s1);
-        if (searched.size() > 0) return {{i, searched[0] + k - 1}, 2};
-    }
-    
-    for (int i = 0; i < m; i++) {
-        s = "";
-        for (int j = 0; j < n; j++) s = s + "" + board[j][i];
-        vector<ll> searched = search(s, s1);
         if (searched.size() > 0) return {{searched[0], i}, 2};
     }
     
