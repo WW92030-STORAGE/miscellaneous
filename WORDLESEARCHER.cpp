@@ -1,17 +1,4 @@
 #include <bits/stdc++.h> 
-#include <stdio.h>
-#include <math.h>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <map>
-#include <iterator>
-#include <set>
-#include <string>
-#include <queue>
-#include <stack>
-#include <functional>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
 using namespace __gnu_pbds;
@@ -65,7 +52,7 @@ bool check(string word, string letters, string mask) { // 0 grey 1 yellow 2 gree
             // if a letter is yellow
             // then it must exist in word
             // but not in the position in letters
-            // the invariant is (yellows in letters) + (greens in letters) <= (nongreens in word) + (greens in word)
+            // the invariant is (yellows + greens in letters) <= (nongreens + greens in word)
             // in other words -- (yellows in letters) <= (nongreens in word)
             if (letters[i] == word[i]) return false; // not same position
             int yellowfreq = 0;
@@ -102,10 +89,10 @@ int main()
     wordlist.close();
     
     ifstream wordlist2("LIST2.TXT");
-    while (getline(wordlist, s)) strings.pb(uppercase(s.substr(0, 5)));
-    wordlist.close();
+    while (getline(wordlist2, s)) strings.pb(uppercase(s.substr(0, 5)));
+    wordlist2.close();
     
-    cout << "INPUT FORMAT -- GUESS MASK_" << "\n" << "0 = GREY | 1 = YELLOW | 2 = GREEN" << endl;
+    cout << "INPUT FORMAT -- [GUESS] [MASK]" << "\n" << "0 = GREY | 1 = YELLOW | 2 = GREEN" << endl;
     
     string guess, mask;
     vector<string> outputs;
@@ -114,12 +101,22 @@ int main()
     vector<string> masks;
     set<string> guessset;
     
-    for (auto ii : strings) outputs.push_back(ii);
-    sort(outputs.begin(), outputs.end());
-    
-    for (int i = 0; i < 9000; i++) {
-        cin >> guess >> mask;
+    for (int i = 0; i < strings.size(); i++) {
+        cin >> guess;
         guess = uppercase(guess);
+        
+        if (guess == "UNDO") {
+            assert(guesses.size() > 0);
+            string guess2 = guesses[guesses.size() - 1];
+            cout << "UNDO - REMOVED GUESS " << guess2 << endl;
+            guesses.pop_back();
+            masks.pop_back();
+            guessset.erase(guessset.find(guess2));
+            i -= 2;
+            continue;
+        }
+        
+        cin >> mask;
         
         if (guessset.find(guess) != guessset.end()) {
             cout << "DUPLICATE ATTEMPT" << endl;
@@ -133,8 +130,12 @@ int main()
         
         if (mask == "22222") {
             cout << "SOLVED IN " << (i + 1) << " ATTEMPTS" << endl;
-            return 0;
+            break;
         }
+        
+        outputs.clear();
+        for (auto i : strings) outputs.pb(i);
+        sort(outputs.begin(), outputs.end());
         
         for (int index = 0; index <= i; index++) {
             temp.erase(temp.begin(), temp.end());
@@ -146,7 +147,6 @@ int main()
         
         if (!RESTRICT) {
             for (auto i : outputs) cout << i << " ";
-            cout << endl;
         }
         else {
             set<int> numset;
@@ -156,9 +156,9 @@ int main()
                 numset.insert(picked);
             }
             for (auto i : numset) cout << outputs[i] << " ";
-            cout << endl;
         }
+        cout << "[" << outputs.size() << "]" << endl;
     }
     
    	return 0;
-} 
+}
