@@ -1,16 +1,4 @@
 #include <bits/stdc++.h> 
-#include <stdio.h>
-#include <math.h>
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <map>
-#include <iterator>
-#include <set>
-#include <string>
-#include <queue>
-#include <stack>
-#include <functional>
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
 using namespace __gnu_pbds;
