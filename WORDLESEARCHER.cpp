@@ -79,33 +79,27 @@ string uppercase(string s) {
 bool RESTRICT = true;
 int nums = 16;
 
-int main()
-{
-    ifstream wordlist("LIST.TXT");
-    string s;
-    
-    vector<string> strings;
-    while (getline(wordlist, s)) strings.pb(uppercase(s.substr(0, 5)));
-    wordlist.close();
-    
-    ifstream wordlist2("LIST2.TXT");
-    while (getline(wordlist2, s)) strings.pb(uppercase(s.substr(0, 5)));
-    wordlist2.close();
-    
-    cout << "INPUT FORMAT -- [GUESS] [MASK]" << "\n" << "0 = GREY | 1 = YELLOW | 2 = GREEN" << endl;
-    
-    string guess, mask;
-    vector<string> outputs;
-    vector<string> temp;
-    vector<string> guesses;
-    vector<string> masks;
-    set<string> guessset;
+vector<string> strings;
+string guess, mask;
+vector<string> outputs;
+vector<string> temp;
+vector<string> guesses;
+vector<string> masks;
+set<string> guessset;
+
+void run() {
+    mask = guess = "";
+    outputs.clear();
+    temp.clear();
+    guesses.clear();
+    masks.clear();
+    guessset.clear();
     
     for (int i = 0; i < strings.size(); i++) {
         cin >> guess;
         guess = uppercase(guess);
         
-        if (guess == "UNDO") {
+        if (guess == "/UNDO") {
             assert(guesses.size() > 0);
             string guess2 = guesses[guesses.size() - 1];
             cout << "UNDO - REMOVED GUESS " << guess2 << endl;
@@ -114,6 +108,10 @@ int main()
             guessset.erase(guessset.find(guess2));
             i -= 2;
             continue;
+        }
+        else if (guess == "/RESET") {
+            cout << "GAME RESET" << endl;
+            return;
         }
         
         cin >> mask;
@@ -159,6 +157,28 @@ int main()
         }
         cout << "[" << outputs.size() << "]" << endl;
     }
+}
+
+int main()
+{
+    ifstream wordlist("LIST.TXT");
+    string s;
+    
+    while (getline(wordlist, s)) strings.pb(uppercase(s.substr(0, 5)));
+    wordlist.close();
+    
+    cout << strings.size() << endl;
+    
+    ifstream wordlist2("LIST2.TXT");
+    while (getline(wordlist2, s)) strings.pb(uppercase(s.substr(0, 5)));
+    wordlist2.close();
+    
+    cout << strings.size() << endl;
+    
+    cout << "INPUT FORMAT -- [GUESS] [MASK]" << "\n" << "0 = GREY | 1 = YELLOW | 2 = GREEN" << endl;
+    cout << "COMMANDS - /UNDO TO UNDO AND /RESET TO RESET" << endl;
+    
+    while (true) run();
     
    	return 0;
 }
