@@ -19,7 +19,7 @@ using namespace __gnu_pbds;
 // DISCLAIMER - Instead, since all words share several letters, such as E, R, and Y, your next attempt should be a word containing the more unique ones, such as P and D.
 // DISCLAIMER - Inputting "PRODS" results in the output "21000" which narrows the 10 words down to 2: "PERKY PERVY [2]". You are now guaranteed to win this round.
 // DISCLAIMER - Another example (188): The program outputs "BEARD DEARN DEARY FEART HEARD HEART REARM TEARY WEARY YEARD YEARN [11]" after attempt #2.
-// DISCLAIMER - Inputting "TARDY" results in the only word "WEARY" being outputted. This turns out to be the correct answer.
+// DISCLAIMER - Inputting "TARDY" into the game gives "01102" and so "TARDY 01102" makes the program output a single word "WEARY". This turns out to be the correct answer.
 
 double rng() {
     random_device rd;
