@@ -14,9 +14,9 @@ using namespace __gnu_pbds;
 // DISCLAIMER - This program is in no way, shape, or form, a cheat engine. It is not designed to give you the right answer each time.
 // DISCLAIMER - Its only purpose is to tell you which words fit the criteria you have received. There is no information theory here, only brute force + randomization.
 // DISCLAIMER - Additionally, the program's output is not necessarily the best route. You might still have to think outside the box.
-// DISCLAIMER - For example: if the program outputs "DERNY FERLY FERNY JERKY KERKY NERDY NERVY PERDY PERKY PERVY [10]" after your 3rd guess
+// DISCLAIMER - For example: Suppose the program outputs "DERNY FERLY FERNY JERKY KERKY NERDY NERVY PERDY PERKY PERVY [10]" after your 3rd guess.
 // DISCLAIMER - The strategy is not to use one of the words on the list.
-// DISCLAIMER - Instead, since all words share several letters, such as E, R, and Y, try words containing the more unique ones.
+// DISCLAIMER - Instead, since all words share several letters, such as E, R, and Y, your next attempt should be a word containing the more unique ones, such as P and D.
 // DISCLAIMER - Inputting "PRODS" results in the output "21000" which narrows the 10 words down to 2: "PERKY PERVY [2]". You are now guaranteed to win this round.
 
 double rng() {
