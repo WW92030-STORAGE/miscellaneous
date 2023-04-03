@@ -1,3 +1,5 @@
+// DISCLAIMER - THIS PROGRAM IS HIGHLY UNOPTIMIZED. USE AT YOUR OWN RISK.
+// DISCLAIMER - THIS PROGRAM IS HIGHLY UNOPTIMIZED. USE AT YOUR OWN RISK.
 
 // Java program showing the implementation of a simple record
 import javax.sound.midi.*;
