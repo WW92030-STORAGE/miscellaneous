@@ -1,7 +1,7 @@
 import java.lang.*;
 import java.util.*;
 
-public class CARDSHARKS // Card counting mechanism for any Card Sharks like game (e.g. Tyranu Evavu)
+public class Main
 {
     static Scanner input;
     static int[] cards;
@@ -42,7 +42,7 @@ public class CARDSHARKS // Card counting mechanism for any Card Sharks like game
 		            continue;
 		        }
 		    }
-		    else if (line.equals("/RESET")) {
+		    else if (line.equals("/RESET") || line.equals("0")) {
 		        reset();
 		        return true;
 		    }
