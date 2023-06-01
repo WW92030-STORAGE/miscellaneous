@@ -37,6 +37,10 @@ public class Main
             String line = input.nextLine().toUpperCase();
 		    if (isNumeric(line)) {
 		        int val = ip(line);
+		        if (val == 0) {
+		            reset();
+		            return true;
+		        }
 		        if (val <= 0 || val > 13) {
 		            System.out.println("ERROR INVALID CARD");
 		            continue;
