@@ -1,3 +1,8 @@
+/*
+INPUT FORMAT - Each row is of the form (NAME) - ID (Misc. Information)
+The histogram and frequency table is constructed using the ID.
+*/
+
 import java.lang.*;
 import java.util.*;
 
