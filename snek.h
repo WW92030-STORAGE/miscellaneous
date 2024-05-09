@@ -1,6 +1,3 @@
-#ifndef SNEK_H
-#define SNEK_H
-
 #include <vector>
 #include <set>
 #include <iostream>
@@ -166,6 +163,8 @@ class SnakeGame {
         }
     }
     
+    // Get the current state.
+    
     State getCurrentState() {
         int dir = prevmove;
         int dangers = 0;
@@ -238,6 +237,8 @@ class SnakeGame {
         return 0;
     }
     
+    // Moves the snake one step and updates the q-table.
+    
     int act(State state, bool DEBUG = false) {
         double maxq = DBL_MIN;
         int chosen = rand() % 3; // front left or right
@@ -267,6 +268,8 @@ class SnakeGame {
         
         return blip;
     }
+    
+    // One iteration of the q learning process. It places a food if there is no existing food and moves the snake one step.
     
     int iteration(bool DEBUG = false) {
         placeFood();
@@ -308,4 +311,97 @@ class SnakeGame {
     }
 };
 
-#endif
+int manual() {
+    SnakeGame sg;
+    sg.placeFood();
+    sg.dispGrid();
+    std::string x;
+    
+    while (std::cin >> x) {
+        char c = x[0];
+        if (c >= 'a' && c <= 'z') c = c + 'A' - 'a';
+        int res = 0;
+        switch (c) {
+            case 'W':
+                res = sg.move(2);
+                break;
+            case 'A':
+                res = sg.move(3);
+                break;
+            case 'S':
+                res = sg.move(0);
+                break;
+            case 'D':
+                res = sg.move(1);
+                break;
+        }
+        
+        sg.dispGrid();
+        auto i = sg.getCurrentState();
+        std::cout << "[" << i.dir << " " << i.danger << " " << i.food << " " << i.foodlarge << " " << i.proximity << "]\n";
+    
+    if (res < 0) {
+        return sg.death();
+    }
+    }
+}
+
+/*
+
+// EXAMPLE PROGRAM
+
+using namespace std;
+
+int main()
+{
+    srand(time(0));
+    // manual();
+    SnakeGame sg;
+    // sg.dispGrid();
+    string x;
+
+    // Initial param values
+    
+    sg.epsilon = 0.7;
+    sg.gamma = 0.5;
+    sg.alpha = 0.6;
+
+    // Training
+    
+    for (int i = 0; i < 1024; i++) {
+        int iterations = 0;
+        while (sg.iteration() > sg.DANGER) {
+            // sg.dispQ();
+            // std::cout << "\n";
+            iterations++;
+        }
+        // if (i % 64 == 0) std::cout << "TRAINING EPOCH " << i << " SCORE " << sg.death() << "\n";
+        sg.epsilon = max(0.01, sg.epsilon - 0.002);
+        sg.gamma = min(0.8, sg.gamma + 0.002);
+        sg.alpha = min(0.9, sg.alpha + 0.002);
+    }
+    
+    std::cout << "TRAINING FINISHED!\n";
+    
+    sg.dispQ();
+    
+    // return 0;
+
+    // Enter something into STDIN to run a game.
+    
+    while (true) {
+        cin >> x;
+        while (true) {
+            if (sg.iteration(true) <= sg.DANGER) break;
+            sg.dispGrid();
+            auto i = sg.getCurrentState();
+            std::cout << "[" << i.dir << " " << i.danger << " " << i.food << " " << i.foodlarge << " " << i.proximity << "]\n";
+            for (int i = 0; i < 8000000; i++); // Artificial delay so you can see the snake moving.
+        }
+        std::cout << "EPOCH FINISHED TIME FOR A NEW ONE " << sg.death() << "\n";
+    }
+    
+    return 0;
+}
+
+*/
