@@ -48,6 +48,11 @@ struct Point {
         x -= other.x;
         y -= other.y;
     }
+
+    void inv() {
+        x = -1 * x;
+        y = -1 * y;
+    }
     
     void align() {
         x = std::floor(x + 0.5);
