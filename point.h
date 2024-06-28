@@ -48,7 +48,19 @@ struct Point {
         x -= other.x;
         y -= other.y;
     }
-
+    
+    Point operator+(Point& other) {
+        return {x + other.x, y + other.y};
+    }
+    
+    Point operator-(Point& other) {
+        return {x - other.x, y - other.y};
+    }
+    
+    void operator+=(Point& other) { add(other); }
+    
+    void operator-=(Point& other) { sub(other); }
+    
     void inv() {
         x = -1 * x;
         y = -1 * y;
