@@ -2,6 +2,7 @@
 #include <cmath>
 
 // CODE TO RETRIEVE THE CENTERS OF THE TWO CIRCLES THROUGH TWO POINTS ps[0] AND ps[1] AND WITH RADIUS r.
+// ORIGINALLY USED IN THE LEETCODE PROBLEM 1453.
 
 double sq(double x) {
 	return x * x;
