@@ -15,7 +15,8 @@ inline void Rect2Points(double x, double y, double w, double h, Color col) {
         Rect2Points(std::min(x, w), std::min(y, h), std::max(x, w), std::max(y, h), col);
         return;
     }
-    DrawRectangle(int(x), int(y), int(w - x), int(h - y), col);
+    Rectangle rect = {x, y, w - x, h - y};
+    DrawRectangleRec(rect, col);
 }
 
 // Draw a rotated rectangle parallel to two points and with a specified half-thickness
