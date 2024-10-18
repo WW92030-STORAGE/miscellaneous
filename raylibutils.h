@@ -45,25 +45,6 @@ inline void DrawSlot(double x1, double y1, double x2, double y2, double rad, Col
     DrawRotatedRect(x1, y1, x2, y2, rad, col);
 }
 
-/*
-
-NOTATION FOR THESE GEOMETRY TYPE METHODS
-
-The syntax for the names is (destination)(source)
-where destination is what is supposed to come out and source is what is supposed to go in. all source inputs (except real numbers) are of the same "type".
-
-rot = rotation
-rsq = squared distance
-vec2 = Vector2
-vec3 = Vector3
-vec4 = Vector4
-pd = pair<double, double>
-pf = pair<float, float>
-vd = vector<double>
-vf = vector<float>
-
-*/
-
 // Rotations
 
 inline std::pair<double, double> rotpd(std::pair<double, double> point, std::pair<double, double> origin, double rad) {
@@ -78,20 +59,6 @@ inline std::pair<float, float> rotpf(std::pair<float, float> point, std::pair<fl
     double dy = point.second - origin.second;
     std::pair<double, double> blip = {dx * cos(rad) - dy * sin(rad), dx * sin(rad) + dy * cos(rad)};
     return {float(blip.first + origin.first), float(blip.second + origin.second)};
-}
-
-// Distance
-
-inline double rsqpd(std::pair<double, double> a, std::pair<double, double> b) {
-    return (b.first - a.first) * (b.first - a.first) + (b.second - a.second) * (b.second - a.second);
-}
-
-inline double rsqpf(std::pair<float, float> a, std::pair<float, float> b) {
-    return (b.first - a.first) * (b.first - a.first) + (b.second - a.second) * (b.second - a.second);
-}
-
-inline double rsqvec2(std::pair<float, float> a, std::pair<float, float> b) {
-    return (b.first - a.first) * (b.first - a.first) + (b.second - a.second) * (b.second - a.second);
 }
 
 // Convert from pairs and vectors to Vectors
@@ -144,14 +111,6 @@ inline std::pair<double, double> pdvec2(Vector2 v) {
 
 inline std::pair<float, float> pfvec2(Vector2 v) {
     return std::pair<float, float>{v.x, v.y};
-}
-
-inline std::vector<float> vfvec2(Vector2 v) {
-    return std::vector<float>({v.x, v.y});
-}
-
-inline std::vector<double> vdvec2(Vector2 v) {
-    return std::vector<double>({v.x, v.y});
 }
 
 inline std::vector<double> vdvec3(Vector3 v) {
