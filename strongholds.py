@@ -3,7 +3,7 @@ import math
 """
 
 Program to estimate locations of strongholds based on known stronghold location and stronghold count in the corresponding ring.
-WARNING - Rings are very thick, locations are not exact.
+WARNING - Rings are very thick, locations are not exact. Best way to do this is to go to a point and throw an ender eye to home in on the nearest stronghold.
 
 """
 
