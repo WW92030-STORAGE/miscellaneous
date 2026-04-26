@@ -13,7 +13,7 @@
 #endif
 
 // change me????
-#define FFT_NUM float
+#define FFT_NUM double
 
 struct Complex {
     FFT_NUM x = 0;
@@ -48,6 +48,23 @@ struct Complex {
     Complex conjugate() {
         return Complex(x, -1 * y);
     }
+
+    FFT_NUM lengthsquared() {
+        return x * x + y * y;
+    }
+
+    FFT_NUM length() {
+        return sqrt(lengthsquared());
+    }
+
+    FFT_NUM theta() {
+        return atan2(y, x);
+    }
+
+    bool operator<(const Complex& other) const {
+        if (x != other.x) return x < other.x;
+        return y < other.y;
+    }
     
     std::string to_string() {
         return std::to_string(x) + " + " + std::to_string(y) + "i";
@@ -67,16 +84,17 @@ Complex oncircle(FFT_NUM theta) {
 }
 
 Complex uroot(int64_t n, int64_t i) {
-    constexpr FFT_NUM tau = 2 * M_PI;
+    constexpr FFT_NUM tau = (2 * M_PI);
     if (i > n || i < -n) i %= n;
     return oncircle((tau / (FFT_NUM)(n)) * i);
 }
 
 std::vector<Complex> uroots(int64_t n) {
     constexpr FFT_NUM tau = 2 * M_PI;
+    FFT_NUM spacing = tau / (FFT_NUM)(n);
     std::vector<Complex> v(n);
     for (int i = 0; i < n; i++) {
-        v[i] = oncircle((tau / (FFT_NUM)(n)) * i);
+        v[i] = oncircle(spacing * i);
     }
     return v;
 }

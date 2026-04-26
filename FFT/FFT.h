@@ -9,6 +9,8 @@
 
 #include "comp.h"
 
+#include <iostream>
+
 std::string disp(std::vector<Complex> v) {
     std::string res = "[";
     
@@ -52,10 +54,11 @@ std::vector<Complex> FFT(std::vector<Complex>& x) {
         if (i & 1) odd[i>>1] = x[i];
         else eve[i>>1] = x[i];
     }
+
     
     auto E = FFT(eve);
     auto O = FFT(odd);
-    
+
     for (int64_t k = 0; k < (N>>1); k++) {
         Complex coeff = uroot(N, -1 * k);
         res[k] = E[k] + (coeff * O[k]);
