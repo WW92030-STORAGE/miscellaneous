@@ -1,7 +1,7 @@
 from num2words import num2words
 
 vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'}
-punctuation = {'.', ',', '-', '?', '!', '\'', '\"', '(', ')', '_', ':', ';', '[', ']', '/', '\\'}
+punctuation = {'.', ',', '-', '?', '!', '\'', '\"', '(', ')', '_', ':', ';', '[', ']', '/', '\\', '&'}
 
 # How many variables are there?
 def dataFormat():
@@ -60,19 +60,23 @@ def findEquilibrium(p, guess = None, max_iters = 1024):
     
     return fast, (fast == iterate(p_cnt, fast))
 
-def gridsearch(p, lim = 64, guess = None, ind = 0):
+def gridsearch(p, llim = None, ulim = None, length = 16, guess = None, ind = 0):
     while len(p) < 1 + len(dataFormat()):
         p.append("")
     if guess is None:
         guess = dataFormat()
+
+    if llim is None or ulim is None:
+        com = ""
+        for x in p:
+            com += x
+        cc = getCount(com)
+        llim = cc
+        ulim = [i + length for i in llim]
+        print("LIMITS", llim, ulim)
     
     if ind >= len(p) - 1:
-        c_pr = True
-        for x in guess:
-            if (x % 8 != 0):
-                c_pr = False
-                break
-        if c_pr:
+        if guess[-2] % 16 == 0 and guess[-1] == llim:
             print(guess)
         
         a, b = findEquilibrium(p, guess)
@@ -81,16 +85,16 @@ def gridsearch(p, lim = 64, guess = None, ind = 0):
         return None
     
     res = None
-    for i in range(lim):
+    for i in range(llim[ind], ulim[ind]):
         guess[ind] = i
-        res = gridsearch(p, lim, guess, ind + 1)
+        res = gridsearch(p, llim, ulim, length, guess, ind + 1)
         if res is not None:
             return res
     
     return res
 
 def run():
-    p1 = "Protogens are cool. Anyways, uhhh... This message contains"
+    p1 = "Good evening furries, scalies, protogens, synths, and all of the B&WC. This message contains"
     p2 = "letters,"
     p3 = "vowels,"
     p4 = "consonants, and"
@@ -106,5 +110,33 @@ def run():
     print(final)
     print(getCount(final))
 
+def true_run(OUT = "equilibrium.txt"):
+    p0 = ""
+    with open("equilibrium.in", 'r') as F:
+        for line in F:
+            p0 += line
+    p1 = "Anyways, this message contains"
+    p2 = "letters,"
+    p3 = "vowels,"
+    p4 = "consonants, and"
+    p5 = "punctuation marks."
+
+    if len(p0) > 0 and p0[-1].isspace():
+        p1 = p0 + p1
+    else:
+        p1 = p0 + " " + p1
+
+    p = [p1, p2, p3, p4, p5]
+
+    value = gridsearch(p)
+    if value is None:
+        print("No solution...")
+        return
+    
+    final = construct(p, value)
+    print(getCount(final))
+    with open(OUT, 'w') as F:
+        F.write(final)
+
 if __name__ == "__main__":
-    run()
+    true_run()
