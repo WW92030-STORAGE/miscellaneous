@@ -76,7 +76,7 @@ def gridsearch(p, llim = None, ulim = None, length = 16, guess = None, ind = 0):
         print("LIMITS", llim, ulim)
     
     if ind >= len(p) - 1:
-        if guess[-2] % 16 == 0 and guess[-1] == llim:
+        if guess[-2] == llim[-2] and guess[-1] == llim[-1]:
             print(guess)
         
         a, b = findEquilibrium(p, guess)
