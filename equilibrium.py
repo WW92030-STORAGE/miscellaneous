@@ -1,6 +1,6 @@
 from num2words import num2words
 
-vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'}
+vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U', 'y', 'Y'}
 punctuation = {'.', ',', '-', '?', '!', '\'', '\"', '(', ')', '_', ':', ';', '[', ']', '/', '\\', '&'}
 
 # How many variables are there?
@@ -72,7 +72,7 @@ def gridsearch(p, llim = None, ulim = None, length = 16, guess = None, ind = 0):
             com += x
         cc = getCount(com)
         llim = cc
-        ulim = [i + length for i in llim]
+        ulim = [i + length for i in cc]
         print("LIMITS", llim, ulim)
     
     if ind >= len(p) - 1:
@@ -115,7 +115,7 @@ def true_run(OUT = "equilibrium.txt"):
     with open("equilibrium.in", 'r') as F:
         for line in F:
             p0 += line
-    p1 = "Anyways, this message contains"
+    p1 = ""
     p2 = "letters,"
     p3 = "vowels,"
     p4 = "consonants, and"
