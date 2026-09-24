@@ -37,11 +37,13 @@ inline double asinXX(double d) {
 	return res;
 }
 
-std::string disp(Trix::Data d) {
+std::string disp(Trix::Data d, bool r2d = false) {
+	constexpr double R2D = 180.0 / M_PI;
 	std::string res = "Data[";
 	for (int i = 0; i < 6; i++) {
 		if (i) res += ", ";
-		res += std::to_string(d[i]);
+		if (i >= 3 && r2d) res += std::to_string(d[i] * R2D);
+		else res += std::to_string(d[i]);
 	}
 	return res + "]";
 }
@@ -116,6 +118,7 @@ Data solve(Data input) {
 	bool someSide = v[0] || v[1] || v[2];
 
 	int rotationCounter;
+	bool solved = false;
 	for (rotationCounter = 0; rotationCounter < 3; rotationCounter++) {
 		// Case 2/3: two angles (A, B) and any side is provided
 		if (v[3] && v[4] && someSide) {
@@ -147,6 +150,7 @@ Data solve(Data input) {
 			input[0] = a;
 			input[1] = b;
 			input[2] = c;
+			solved = true;
 
 			break;
 		}
@@ -183,11 +187,13 @@ Data solve(Data input) {
 				if (!checkContradiction(A, input[3], v[3])) return NIL;
 				input[3] = A;
 			}
+			solved = true;
 			break;
 		}
 
 		rotate(input, v);
 	}
+	if (!solved) return NIL;
 	if (rotationCounter == 0) return input;
 	for (; rotationCounter < 3; rotationCounter++) rotate(input, v);
 	return input;
