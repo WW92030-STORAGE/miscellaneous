@@ -11,6 +11,11 @@
 
 #include <iostream>
 
+namespace FFT {
+
+#define FFT_EPSILON 1e-12
+
+
 std::string disp(std::vector<Complex> v) {
     std::string res = "[";
     
@@ -66,6 +71,8 @@ std::vector<Complex> FFT(std::vector<Complex>& x) {
     }
     
     return res;
+}
+
 }
 
 #endif

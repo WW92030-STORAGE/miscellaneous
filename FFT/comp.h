@@ -12,6 +12,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+namespace FFT {
+
 // change me????
 #define FFT_NUM double
 
@@ -97,6 +99,8 @@ std::vector<Complex> uroots(int64_t n) {
         v[i] = oncircle(spacing * i);
     }
     return v;
+}
+
 }
 
 #endif
