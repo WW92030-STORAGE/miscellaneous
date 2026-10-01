@@ -188,7 +188,7 @@ struct DoomFire {
 namespace DoomFireUtils {
 	void animate(DoomFire world, int framecount, std::string OUT_DIR, bool verbose = false) {
     	for (int i = 0; i < framecount; i++) {
-			std::string FILE_OUT = OUT_DIR + "/" + std::to_string(i);
+			std::string FILE_OUT = OUT_DIR + "/FRAME_" + std::to_string(i);
     	    world.update();
     		std::ofstream output(FILE_OUT);
     		output << world.buffer();

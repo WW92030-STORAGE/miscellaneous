@@ -46,10 +46,10 @@ def render(INPUT, RESOLUTION = 16):
 
 def generate_video(INPUT_DIR, OUTPUT, LEN, RESOLUTION = 16):
 	print("GENERATING", OUTPUT + "...")
-	meta = render(INPUT_DIR + "/0", RESOLUTION)
+	meta = render(INPUT_DIR + "/FRAME_0", RESOLUTION)
 	video = cv2.VideoWriter(OUTPUT, cv2.VideoWriter_fourcc(*'DIVX'), 30, (meta.width, meta.height))
 	for i in range(LEN):
-		ren = render(INPUT_DIR + "/" + str(i), RESOLUTION)
+		ren = render(INPUT_DIR + "/FRAME_" + str(i), RESOLUTION)
 		video.write(cv2.cvtColor(np.array(ren), cv2.COLOR_RGB2BGR))
 
 	video.release()
