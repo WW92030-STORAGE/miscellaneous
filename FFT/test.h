@@ -49,14 +49,14 @@ void test1() {
 	std::cout << "Time taken: " << count * 0.001 << " ms" << std::endl;
 	std::cout << "Time taken: " << count * 0.000001 << " s" << std::endl;
 	
-    double min_diff_x = 1;
-    double min_diff_y = 1;
+    FFT_NUM min_diff_x = 1;
+    FFT_NUM min_diff_y = 1;
 
-    double max_diff_x = 0;
-    double max_diff_y = 0;
+    FFT_NUM max_diff_x = 0;
+    FFT_NUM max_diff_y = 0;
 	for (int i = 0; i < v.size(); i++) {
-        double dx = abs(res[i].x - res2[i].x);
-        double dy = abs(res[i].y - res2[i].y);
+        FFT_NUM dx = abs(res[i].x - res2[i].x);
+        FFT_NUM dy = abs(res[i].y - res2[i].y);
 	    // std::cout << res[i].to_string() << " | " << res2[i].to_string() << "\n";
 	    // std::cout <<dx << " " << dy << "\n";
         min_diff_x = min(dx, min_diff_x);
@@ -86,7 +86,7 @@ void functest() {
 
     // sort in descending order by amplitude
 
-    std::vector<std::pair<std::pair<double, int>, FFT::Complex>> descending;
+    std::vector<std::pair<std::pair<FFT_NUM, int>, FFT::Complex>> descending;
     for (int i = 0; i < N; i++) descending.push_back({{-1 * freq[i].lengthsquared(), i}, freq[i]});
     std::sort(descending.begin(), descending.end());
 
@@ -94,9 +94,9 @@ void functest() {
     for (int i = 0; i < N; i++) {
         for (int k = 0; k < N - 2; k++) {
             auto term = descending[k].second;
-            double argument = term.length();
-            double phase = term.theta();
-            double FF = (double)(descending[k].first.second) / N;
+            FFT_NUM argument = term.length();
+            FFT_NUM phase = term.theta();
+            FFT_NUM FF = (FFT_NUM)(descending[k].first.second) / N;
             FFT::Complex value = FFT::frompolar(argument, 2 * M_PI * FF * i + phase);
 
             solution[i] = solution[i] + value;

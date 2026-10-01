@@ -15,7 +15,6 @@ namespace FFT {
 
 #define FFT_EPSILON 1e-12
 
-
 std::string disp(std::vector<Complex> v) {
     std::string res = "[";
     
@@ -66,8 +65,9 @@ std::vector<Complex> FFT(std::vector<Complex>& x) {
 
     for (int64_t k = 0; k < (N>>1); k++) {
         Complex coeff = uroot(N, -1 * k);
-        res[k] = E[k] + (coeff * O[k]);
-        res[k + (N>>1)] = E[k] - (coeff * O[k]);
+		Complex object = coeff * O[k];
+        res[k] = E[k] + object;
+        res[k + (N>>1)] = E[k] - object;
     }
     
     return res;

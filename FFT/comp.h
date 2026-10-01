@@ -48,7 +48,7 @@ struct Complex {
     }
     
     Complex conjugate() {
-        return Complex(x, -1 * y);
+        return Complex(x, -y);
     }
 
     FFT_NUM lengthsquared() {
@@ -87,8 +87,9 @@ Complex oncircle(FFT_NUM theta) {
 
 Complex uroot(int64_t n, int64_t i) {
     constexpr FFT_NUM tau = (2 * M_PI);
+	FFT_NUM circ = tau / (FFT_NUM)(n);
     if (i > n || i < -n) i %= n;
-    return oncircle((tau / (FFT_NUM)(n)) * i);
+    return oncircle(circ * i);
 }
 
 std::vector<Complex> uroots(int64_t n) {

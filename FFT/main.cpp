@@ -5,7 +5,8 @@ using namespace std;
 #include "test.h"
 
 int main()
-{
+{	
+	test1();
     functest();
 	
     return 0;
