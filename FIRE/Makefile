@@ -7,3 +7,7 @@ build:
 	
 run:
 	./main
+
+render: build
+	./main > FIRE.out
+	python3 render.py
