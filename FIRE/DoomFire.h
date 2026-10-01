@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <random>
 #include <string>
+#include <fstream>
 
 namespace DoomFireConsts {
 	std::uniform_real_distribution<double> rand01(0.0, 1.0);
@@ -183,5 +184,21 @@ struct DoomFire {
 		return res;
 	}
 };
+
+namespace DoomFireUtils {
+	void animate(DoomFire world, int framecount, std::string OUT_DIR, bool verbose = false) {
+    	for (int i = 0; i < framecount; i++) {
+			std::string FILE_OUT = OUT_DIR + "/" + std::to_string(i);
+    	    world.update();
+    		std::ofstream output(FILE_OUT);
+    		output << world.buffer();
+    		output.close();
+    	}
+
+    	std::ofstream len(OUT_DIR + "/LEN");
+    	len << framecount;
+    	len.close();
+	}
+}
 
 #endif

@@ -11,3 +11,7 @@ run:
 render: build
 	./main > FIRE.out
 	python3 render.py
+
+video: build
+	./main
+	python3 video.py -r 2
