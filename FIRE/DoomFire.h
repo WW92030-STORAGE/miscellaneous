@@ -36,9 +36,8 @@ struct DoomFire {
 
 	// https://fabiensanglard.net/doom_fire_psx/
 
-	void init(uint64_t seed) {
-		SEED = seed;
-		prng = std::mt19937(seed);
+	void init(uint64_t seed = 0) {
+		initPRNG(seed);
 		particles = new DoomFireConsts::PARTICLE*[R];
 		sources = new bool*[R];
 		for (int i = 0; i < R; i++) {
@@ -47,6 +46,11 @@ struct DoomFire {
 		}
 		defaultSources();
 		clear();
+	}
+
+	void initPRNG(uint64_t seed) {
+		SEED = seed;
+		prng = std::mt19937(seed);
 	}
 
 	void defaultSources() {
