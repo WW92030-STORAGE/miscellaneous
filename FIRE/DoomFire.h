@@ -127,6 +127,7 @@ struct DoomFire {
 	void spread(int r, int c) {
 		if (c >= C - 1) return;
 		DoomFireConsts::PARTICLE value = particles[r][c];
+		if (value <= 0) return;
 		value -= (random() < DECAY);
 
 		double offsetValue = random();
