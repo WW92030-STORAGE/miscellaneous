@@ -77,7 +77,9 @@ struct Conway {
 		points.clear();
 	}
 
+	// If you set BL == TR the grid becomes infinite (aside from integer looping issues)
 	bool inBounds(ConwayPoint p) {
+		if (BL == TR) return true;
 		if (p.x < BL.x || p.x > TR.x || p.y < BL.y || p.y > TR.y) return false;
 		return true;
 	}
@@ -168,6 +170,18 @@ struct Conway {
 			for (int a = 0; a < i; a++) q = {-q.y, q.x};
 			newPoints.insert(q);
 		}
+		std::swap(points, newPoints);
+	}
+
+	void flipV() {
+		std::unordered_set<ConwayPoint> newPoints;
+		for (auto p : points) newPoints.insert({-p.x, p.y});
+		std::swap(points, newPoints);
+	}
+
+	void flipH() {
+		std::unordered_set<ConwayPoint> newPoints;
+		for (auto p : points) newPoints.insert({p.x, -p.y});
 		std::swap(points, newPoints);
 	}
 };
