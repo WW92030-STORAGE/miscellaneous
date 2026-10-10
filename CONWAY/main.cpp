@@ -4,9 +4,10 @@ using namespace std;
 
 
 int main() {
-	Conway conway(64);
-	ConwayPresets::gosperGun(conway);
-	for (int i = 0; i < 10000; i++) conway.update();
+	Conway conway(0);
+	ConwayPresets::acorn(conway);
+
+	for (int i = 0; i < 2000; i++) conway.update();
 
 	cout << conway.dispBB(2) << endl;
 

@@ -4,6 +4,8 @@
 #include <set>
 #include <array>
 #include <string>
+#include <random>
+#include <ctime>
 
 struct ConwayPoint {
 	int64_t x;
@@ -156,6 +158,14 @@ struct Conway {
 		return disp(BL.max(BLx), TR.min(TRx), border, empty, occupied);
 	}
 
+	std::string dispBBReal(int margin = 0, bool border = true, char empty = '.', char occupied = 'X') {
+		auto bb = boundingBox();
+		ConwayPoint BLx = bb.first + ConwayPoint{-margin, -margin};
+		ConwayPoint TRx = bb.second + ConwayPoint{margin, margin};
+
+		return disp(BLx, TRx, border, empty, occupied);
+	}
+
 	void translate(ConwayPoint a) {
 		std::unordered_set<ConwayPoint> newPoints;
 		for (auto p : points) newPoints.insert({p.x + a.x, p.y + a.y});
@@ -253,6 +263,37 @@ void gosperGun(Conway& conway) {
 	for (int y = 8; y >= 0; y--) {
 		for (int x = 0; x < 36; x++) {
 			if (input[ctr++] == 'O') conway.add({x, y});
+		}
+	}
+}
+
+void acorn(Conway& conway) {
+	conway.add({0, 0});
+	conway.add({1, -1});
+	conway.add({2, -1});
+	conway.add({3, -1});
+
+	conway.add({-2, 1});
+	conway.add({-2, -1});
+	conway.add({-3, -1});
+}
+
+void dieHard(Conway& conway) {
+	conway.add({0, 0});
+	conway.add({1, 0});
+	conway.add({-1, 0});
+	conway.add({0, 2});
+	conway.add({-5, 0});
+	conway.add({-5, 1});
+	conway.add({-6, 1});
+}
+
+void soup(Conway& conway, int w = 64, int h = 64, double prob = 0.5, uint64_t seed = 0) {
+	std::mt19937 mt(seed ? seed : time(0));
+	std::uniform_real_distribution<double> rand01(0.0, 1.0);
+	for (int i = 0; i < w; i++) {
+		for (int j = 0; j < h; j++) {
+			if (rand01(mt) < prob) conway.add({i, j});
 		}
 	}
 }
