@@ -33,6 +33,14 @@ struct ConwayPoint {
 	}
 };
 
+ConwayPoint min(ConwayPoint a, ConwayPoint b) {
+	return a.min(b);
+}
+
+ConwayPoint max(ConwayPoint a, ConwayPoint b) {
+	return a.max(b);
+}
+
 // https://ianyepan.github.io/posts/cpp-custom-hash/
 // https://stackoverflow.com/questions/5889238/why-is-xor-the-default-way-to-combine-hashes
 namespace std {
@@ -59,6 +67,22 @@ struct Conway {
 	Conway(int64_t R = 1024) {
 		BL = {-R, -R};
 		TR = {R, R};
+	}
+
+	Conway(ConwayPoint bl, ConwayPoint tr) {
+		BL = min(bl, tr);
+		TR = max(bl, tr);
+	}
+
+	void setBB(ConwayPoint a, ConwayPoint b) {
+		BL = min(a, b);
+		TR = max(a, b);
+	}
+
+	void fitBB(int margin = 2) {
+		std::pair<ConwayPoint, ConwayPoint> bb = boundingBox();
+		BL = {bb.first.x - margin, bb.first.y - margin};
+		TR = {bb.second.x + margin, bb.second.y + margin};
 	}
 
 	bool contains(ConwayPoint p) {
@@ -124,7 +148,8 @@ struct Conway {
 		for (auto p : toAdd) add(p);
 	}
 
-	std::string disp(ConwayPoint BL = {-16, -16}, ConwayPoint TR = {16, 16}, bool border = true, char empty = '.', char occupied = 'X') {
+	// Disp an arbitrary rectangle
+	std::string dispBBReal(ConwayPoint BL = {-16, -16}, ConwayPoint TR = {16, 16}, bool border = true, char empty = '.', char occupied = 'X') {
 		int width = TR.x - BL.x + 1;
 		int height = TR.y - BL.y + 1;
 		std::string res = "";
@@ -150,20 +175,22 @@ struct Conway {
 		return res;
 	}
 
-	std::string dispBB(int margin = 0, ConwayPoint BL = {-64, -64}, ConwayPoint TR = {64, 64}, bool border = true, char empty = '.', char occupied = 'X') {
+	// Disp the world, clamped to a bounding box
+	std::string disp(int margin = 0, ConwayPoint BL = {-64, -64}, ConwayPoint TR = {64, 64}, bool border = true, char empty = '.', char occupied = 'X') {
 		auto bb = boundingBox();
 		ConwayPoint BLx = bb.first + ConwayPoint{-margin, -margin};
 		ConwayPoint TRx = bb.second + ConwayPoint{margin, margin};
 
-		return disp(BL.max(BLx), TR.min(TRx), border, empty, occupied);
+		return dispBBReal(BL.max(BLx), TR.min(TRx), border, empty, occupied);
 	}
 
-	std::string dispBBReal(int margin = 0, bool border = true, char empty = '.', char occupied = 'X') {
+	// Disp the entire goddamn world
+	std::string dispFull(int margin = 0, bool border = true, char empty = '.', char occupied = 'X') {
 		auto bb = boundingBox();
 		ConwayPoint BLx = bb.first + ConwayPoint{-margin, -margin};
 		ConwayPoint TRx = bb.second + ConwayPoint{margin, margin};
 
-		return disp(BLx, TRx, border, empty, occupied);
+		return dispBBReal(BLx, TRx, border, empty, occupied);
 	}
 
 	void translate(ConwayPoint a) {
@@ -198,12 +225,14 @@ struct Conway {
 
 // Loaders
 
-namespace ConwayPlaintext { // Everything in here loads from a strictly plaintext string representing a plaintext file: https://conwaylife.com/wiki/Plaintext
+namespace ConwayUtils { 
 
-Conway loadString(std::string s, char empty = '.', char comm = '!') {
-	Conway c;
+// loadString and exportString loads from a strictly plaintext string representing a plaintext file: https://conwaylife.com/wiki/Plaintext
+Conway loadString(std::string s, int margin = 2, char empty = '.', char comm = '!') {
+	Conway c(0);
 	int prev = 0;
 	int y = 0;
+	int maxX = 0;
 	for (int i = 0; i < s.size(); i++) {
 		if (s[i] == '\n') {
 			if (s[prev] == comm) {
@@ -219,6 +248,7 @@ Conway loadString(std::string s, char empty = '.', char comm = '!') {
 
 			prev = i + 1;
 			y--;
+			maxX = std::max(maxX, xpos);
 		}
 	}
 
@@ -228,12 +258,37 @@ Conway loadString(std::string s, char empty = '.', char comm = '!') {
 			if (s[x] != empty) c.add({xpos, y});
 			xpos++;
 		}
+		maxX = std::max(maxX, xpos);
 	}
+
+	c.fitBB(margin);
+
 	return c;
 }
 
-Conway exportString(Conway& c) {
+std::string exportString(Conway& c, char empty = '.', char full = 'O') {
+	return c.dispFull(0, false, empty, full);
+}
 
+// load from a std::vector<std::vector<bool>> where v[x][y] is the state of point (x, y)
+Conway loadVec(std::vector<std::vector<bool>>& v, int margin = 2) {
+	Conway c(0);
+	for (int i = 0; i < v.size(); i++) {
+		for (int j = 0; j < v[i].size(); j++) {
+			if (v[i][j]) c.add({i, j});
+		}
+	}
+	c.fitBB(margin);
+	return c;
+}
+
+std::vector<std::vector<bool>> exportVec(Conway& c) {
+	auto bb = c.boundingBox();
+	int R = bb.second.x - bb.first.x + 1;
+	int C = bb.second.y - bb.first.y + 1;
+	std::vector<std::vector<bool>> res(R, std::vector<bool>(C, 0));
+	for (auto p : c.points) res[p.x - bb.first.x][p.y - bb.first.y] = 1;
+	return res;
 }
 
 }
