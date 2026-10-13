@@ -79,10 +79,19 @@ struct Conway {
 		TR = max(a, b);
 	}
 
+	void setRadius(int R) {
+		setBB({-R, -R}, {R, R});
+	}
+
 	void fitBB(int margin = 2) {
 		std::pair<ConwayPoint, ConwayPoint> bb = boundingBox();
 		BL = {bb.first.x - margin, bb.first.y - margin};
 		TR = {bb.second.x + margin, bb.second.y + margin};
+	}
+
+	void expand(int val) {
+		BL = {BL.x - val, BL.y - val};
+		TR = {TR.x + val, TR.y + val};
 	}
 
 	bool contains(ConwayPoint p) {
