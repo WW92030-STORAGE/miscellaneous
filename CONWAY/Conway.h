@@ -221,6 +221,18 @@ struct Conway {
 		for (auto p : points) newPoints.insert({p.x, -p.y});
 		std::swap(points, newPoints);
 	}
+
+	void flipDiagonal() {
+		std::unordered_set<ConwayPoint> newPoints;
+		for (auto p : points) newPoints.insert({p.y, p.x});
+		std::swap(points, newPoints);
+	}
+
+	void flipBisector() {
+		std::unordered_set<ConwayPoint> newPoints;
+		for (auto p : points) newPoints.insert({-p.y, -p.x});
+		std::swap(points, newPoints);
+	}
 };
 
 // Loaders
