@@ -31,6 +31,10 @@ struct ConwayPoint {
 	ConwayPoint max(const ConwayPoint& other) {
 		return {std::max(x, other.x), std::max(y, other.y)};
 	}
+
+	std::string to_string() {
+		return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+	}
 };
 
 ConwayPoint min(ConwayPoint a, ConwayPoint b) {
@@ -200,6 +204,12 @@ struct Conway {
 		ConwayPoint TRx = bb.second + ConwayPoint{margin, margin};
 
 		return dispBBReal(BLx, TRx, border, empty, occupied);
+	}
+
+	// Print the bounding box
+	std::string printBB() {
+		auto bb = boundingBox();
+		return "[" + bb.first.to_string() + ", " + bb.second.to_string() + "]";
 	}
 
 	void translate(ConwayPoint a) {
