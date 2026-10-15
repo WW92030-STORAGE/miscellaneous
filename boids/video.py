@@ -40,7 +40,7 @@ def render(INPUT, RESOLUTION = 256, R = 4):
 	file.close()
 	return im
 
-def generate_video(INPUT_DIR, OUTPUT, LEN, RESOLUTION = 16):
+def generate_video(INPUT_DIR, OUTPUT, LEN, RESOLUTION = 256):
 	print("GENERATING", OUTPUT + "...")
 	meta = render(INPUT_DIR + "/FRAME_0", RESOLUTION)
 	video = cv2.VideoWriter(OUTPUT, cv2.VideoWriter_fourcc(*'DIVX'), 30, (meta.width, meta.height))

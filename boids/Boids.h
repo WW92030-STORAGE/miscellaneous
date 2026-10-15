@@ -74,10 +74,10 @@ struct Boids {
 	Vec2 BL = {-1, -1};
 	Vec2 TR = {1, 1};
 	BoidsNum protR = 0.05;
-	BoidsNum visR = 0.2;
+	BoidsNum visR = 0.3;
 	BoidsNum margin = 0.1;
-	BoidsNum minSpeed = 0.001;
-	BoidsNum maxSpeed = 0.01;
+	BoidsNum minSpeed = 0.005;
+	BoidsNum maxSpeed = 0.03;
 	BoidsNum turn = 0.02;
 
 	// dimensionless constants

@@ -50,9 +50,9 @@ def make_gif(INPUT_DIR, OUTPUT, LEN, R = 16):
 
 	output = frames[0]
 
-	PERIOD = 0.05
+	PERIOD = 50
 
-	output.save(OUTPUT, format="GIF", append_images = frames[1:], save_all = True, duration = PERIOD, loop = 0)
+	output.save(OUTPUT, format="GIF", append_images = frames[1:], save_all = True, duration = [PERIOD] * LEN, loop = 0)
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()

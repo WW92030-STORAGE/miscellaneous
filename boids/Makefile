@@ -10,3 +10,6 @@ run:
 
 video: all
 	python3 video.py
+
+gif: all
+	python3 gif.py
