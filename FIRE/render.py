@@ -3,7 +3,7 @@
 from PIL import Image
 # Important constants
 
-INPUT = "FIRE.out" # Where to read the buffer from
+BUF_IN = "FIRE.out" # Where to read the buffer from
 
 COLOR = (255, 0, 0)
 
@@ -42,4 +42,4 @@ def render(INPUT, RESOLUTION = 16):
 
 
 if __name__ == "__main__":
-	render()
+	render(BUF_IN)

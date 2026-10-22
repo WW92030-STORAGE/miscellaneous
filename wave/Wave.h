@@ -209,7 +209,7 @@ struct WFC {
 		return true;
  	}
 
-	bool singleAttempt(std::vector<std::vector<T>>& res, std::vector<std::vector<std::vector<bool>>>& possible, std::vector<std::vector<bool>>& generated, int& generatedCount) {
+	bool singleAttempt(std::vector<std::vector<T>>& res, std::vector<std::vector<std::vector<bool>>>& possible, std::vector<std::vector<bool>>& generated, int& generatedCount, bool verbose = false) {
 		int R = res.size();
 		int C = res[0].size();
 		int P = counts.size();
@@ -338,7 +338,7 @@ struct WFC {
 		return true;
 	}
 
-	std::vector<std::vector<T>> generate(int R, int C) {
+	std::vector<std::vector<T>> generate(int R, int C, bool verbose = false) {
 		int generatedCount = 0;
 		int P = counts.size();
 		std::vector<std::vector<T>> res(R, std::vector<T>(C));
@@ -346,10 +346,10 @@ struct WFC {
 		std::vector<std::vector<bool>> generated(R - FR + 1, std::vector<bool>(C - FC + 1, 0));
 
 		for (int attempt = 0; attempt < (R - FR + 1) * (C - FC + 1); attempt++) {
-			if (!singleAttempt(res, possible, generated, generatedCount)) break;
+			if (!singleAttempt(res, possible, generated, generatedCount, verbose)) break;
 		}
 
-		cout << generatedCount << "/" << (R - FR + 1) * (C - FC + 1) << " CELLS COMPLETED\n";
+		if (verbose) cout << generatedCount << "/" << (R - FR + 1) * (C - FC + 1) << " CELLS COMPLETED\n";
 
 		return res;
 	}
@@ -360,5 +360,21 @@ struct WFC {
 		return res;
 	}
 };
+
+namespace WFCUtils {
+
+template <typename T>
+std::string buffer(std::vector<std::vector<T>>& v) {
+	int R = v.size();
+	int C = v[0].size();
+	std::string res = "[" + std::to_string(R) + "," + std::to_string(C) + "]";
+	for (auto r : v) {
+		res.push_back('\n');
+		for (auto c : r) res += std::to_string(c) + ",";
+	}
+	return res;
+}
+
+}
 
 #endif
