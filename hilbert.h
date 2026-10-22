@@ -1,5 +1,5 @@
-#ifndef HILBERT_H
-#define HILBERT_H
+#ifndef HILBERT_H_NORMALEXISTING
+#define HILBERT_H_NORMALEXISTING
 
 #include <array>
 #include <cstdint>

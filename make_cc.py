@@ -16,6 +16,7 @@ def run():
 		return
 	
 	name = args.name
+	headersuffix = "_NORMALEXISTING"
 	
 	filename = "main"
 	DIR = name + "/"
@@ -60,8 +61,8 @@ int main() {
 	with open(DIR + SRC, 'w') as F:
 		F.write(srcfile)
 	
-	hfile = f'''#ifndef {name.upper()}_H
-#define {name.upper()}_H
+	hfile = f'''#ifndef {name.upper()}_H{headersuffix.upper()}
+#define {name.upper()}_H{headersuffix.upper()}
 
 // your code here
 

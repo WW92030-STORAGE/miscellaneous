@@ -1,5 +1,5 @@
-#ifndef CONWAY_H
-#define CONWAY_H
+#ifndef CONWAY_H_NORMALEXISTING
+#define CONWAY_H_NORMALEXISTING
 
 #include <set>
 #include <array>

@@ -1,5 +1,5 @@
-#ifndef FFT_EXT
-#define FFT_EXT
+#ifndef FFT_EXT_NORMALEXISTING
+#define FFT_EXT_NORMALEXISTING
 
 #include <vector>
 #include <cstdint>

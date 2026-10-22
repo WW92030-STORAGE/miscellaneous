@@ -1,5 +1,5 @@
-#ifndef BOIDS_H
-#define BOIDS_H
+#ifndef BOIDS_H_NORMALEXISTING
+#define BOIDS_H_NORMALEXISTING
 
 #include <vector>
 #include <string>
