@@ -235,7 +235,7 @@ struct WFC {
 				int len = 0; 
 				for (int i = 0; i < P; i++) len += possible[r][c][i];
 				if (len <= 0) {
-					std::cout << "ERROR)(len)!!! " << r << " " << c << "\n";
+					if (verbose) std::cout << "ERROR(len)!!! " << r << " " << c << "\n";
 					return false;
 				}
 				if (len <= 1) { // forced
@@ -249,7 +249,7 @@ struct WFC {
 					if (possible[r][c][i]) denom += counts[i].second;
 				}
 				if (denom <= 0) {
-					std::cout << "ERROR(denom)!!! " << r << " " << c << "\n";
+					if (verbose) std::cout << "ERROR(denom)!!! " << r << " " << c << "\n";
 					return false; // contradiction
 				}
 				double trueDenom = 1.0 / denom;
@@ -269,7 +269,7 @@ struct WFC {
 		}
 		// end entropy pick
 		if (xr < 0 || xc < 0) {
-			std::cout << "ERROR(xr, xc)!!! " << xr << " " << xc << "\n";
+			if (verbose) std::cout << "ERROR(xr, xc)!!! " << xr << " " << xc << "\n";
 			return false; // contradiction
 		}
 		// populate the chosen pattern index and counts
@@ -280,7 +280,7 @@ struct WFC {
 			}
 		}
 		if (theCounts.size() <= 0) {
-			std::cout << "ERROR (counts)!!! " << xr << " " << xc << "\n";
+			if (verbose) std::cout << "ERROR (counts)!!! " << xr << " " << xc << "\n";
 			return false; // contradiction
 		}
 		int index = randomIndex(theCounts);
@@ -328,7 +328,7 @@ struct WFC {
 					bool hasP = false;
 					for (auto x : possible[pr][pc]) hasP |= x;
 					if (!hasP) {
-						cout << "ERROR(propagation)" << pr << " " << pc << "\n";
+						if (verbose) cout << "ERROR(propagation)" << pr << " " << pc << "\n";
 						return false;
 					}
 				}
