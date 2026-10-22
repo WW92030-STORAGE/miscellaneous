@@ -26,6 +26,17 @@ template <typename T>
 		return res;
 	}
 
+std::string dispBitArray(std::vector<bool>& v) {
+	std::string res = "";
+	for (int i = 0; i < v.size(); i++) {
+		if (v[i]) {
+			if (res.size()) res.push_back(' ');
+			res += std::to_string(i);
+		}
+	}
+	return res;
+}
+
 template <typename T>
 	std::string disp(std::vector<std::vector<T>> v) {
 		std::string res = "";
@@ -137,6 +148,15 @@ struct WFC {
 				}
 			}
 		}
+		for (int i = 0; i < P; i++) {
+			cout << disp<T>(counts[i].first) << endl;
+			cout << i << ": \n";
+			for (int d = 0; d < 4; d++) {
+				cout << "> " << d << ": ";
+				for (auto x : neighbors[i][d]) cout << x << " ";
+				cout << endl;
+			}
+		}
 	}
 
 	void setseed(uint64_t sed) {
@@ -174,7 +194,7 @@ struct WFC {
 		return true;
  	}
 
-	bool singleAttempt(std::vector<std::vector<T>>& res, std::vector<std::vector<std::vector<bool>>>& possible, std::vector<std::vector<bool>>& generated) {
+	bool singleAttempt(std::vector<std::vector<T>>& res, std::vector<std::vector<std::vector<bool>>>& possible, std::vector<std::vector<bool>>& generated, int& generatedCount) {
 		int R = res.size();
 		int C = res[0].size();
 		int P = counts.size();
@@ -200,16 +220,23 @@ struct WFC {
 				int len = 0; 
 				for (int i = 0; i < P; i++) len += possible[r][c][i];
 				if (len <= 0) {
-					// std::cout << "ERROR!!! " << r << " " << c << "\n";
+					std::cout << "ERROR)(len)!!! " << r << " " << c << "\n";
 					return false;
 				}
-				if (len <= 1) continue; // generated
+				if (len <= 1) { // forced
+					xr = r;
+					xc = c;
+					break;
+				}
 				// compute entropy
 				int denom = 0;
 				for (int i = 0; i < P; i++) {
 					if (possible[r][c][i]) denom += counts[i].second;
 				}
-				if (denom <= 0) return false; // contradiction
+				if (denom <= 0) {
+					std::cout << "ERROR(denom)!!! " << r << " " << c << "\n";
+					return false; // contradiction
+				}
 				double trueDenom = 1.0 / denom;
 				double entropy = 0;
 				for (int i = 0; i < P; i++) {
@@ -226,7 +253,10 @@ struct WFC {
 				}
 		}
 		// end entropy pick
-		if (xr < 0 || xc < 0) return false; // contradiction
+		if (xr < 0 || xc < 0) {
+			std::cout << "ERROR(xr, xc)!!! " << xr << " " << xc << "\n";
+			return false; // contradiction
+		}
 		// populate the chosen pattern index and counts
 		for (int i = 0; i < P; i++) {
 			if (possible[xr][xc][i]) {
@@ -234,20 +264,26 @@ struct WFC {
 				theCounts.push_back(counts[i].second);
 			}
 		}
-		if (theCounts.size() <= 0) return false; // contradiction
+		if (theCounts.size() <= 0) {
+			std::cout << "ERROR (counts)!!! " << xr << " " << xc << "\n";
+			return false; // contradiction
+		}
 		int index = randomIndex(theCounts);
 		int chosenIndex = thePatterns[index];
 		generated[xr][xc] = 1;
+		generatedCount++;
 		for (int fr = 0; fr < FR; fr++) {
 			for (int fc = 0; fc < FC; fc++) res[fr + xr][fc + xc] = counts[chosenIndex].first[fr][fc];
 		}
-		// cout << xr << " " << xc << "\n";
+		cout << xr << " " << xc << "\n";
 
 		for (int i = 0; i < P; i++) possible[xr][xc][i] = (i == chosenIndex);
 
 		// propagate changes
 		std::queue<std::pair<int, int>> q;
 		q.push({xr, xc});
+		// cout << "BEGIN " << chosenIndex << "\n";
+		std::vector<bool> computedPossible(P, 0);
 		while (q.size()) {
 			auto p = q.front();
 			int r = p.first;
@@ -258,7 +294,7 @@ struct WFC {
 				int pc = c + dy[d];
 				if (pr < 0 || pc < 0 || pr >= generated.size() || pc >= generated[pr].size()) continue;
 
-				std::vector<bool> computedPossible(P, 0);
+				for (int i = 0; i < P; i++) computedPossible[i] = 0;
 
 				bool reduced = false;
 				// iterate through all currently known values at the starting point
@@ -273,7 +309,15 @@ struct WFC {
 					possible[pr][pc][i] = possible[pr][pc][i] & computedPossible[i];
 					if (possible[pr][pc][i] != original) reduced = true;
 				}
-				if (reduced) q.push({pr, pc});
+				if (reduced) {
+					q.push({pr, pc});
+					bool hasP = false;
+					for (auto x : possible[pr][pc]) hasP |= x;
+					if (!hasP) {
+						cout << "ERROR(propagation)" << pr << " " << pc << "\n";
+						return false;
+					}
+				}
 			}
 		}
 
@@ -281,14 +325,17 @@ struct WFC {
 	}
 
 	std::vector<std::vector<T>> generate(int R, int C) {
+		int generatedCount = 0;
 		int P = counts.size();
 		std::vector<std::vector<T>> res(R, std::vector<T>(C));
 		std::vector<std::vector<std::vector<bool>>> possible(R - FR + 1, std::vector<std::vector<bool>>(C - FC + 1, std::vector<bool>(P, 1)));
 		std::vector<std::vector<bool>> generated(R - FR + 1, std::vector<bool>(C - FC + 1, 0));
 
 		for (int attempt = 0; attempt < (R - FR + 1) * (C - FC + 1); attempt++) {
-			singleAttempt(res, possible, generated);
+			if (!singleAttempt(res, possible, generated, generatedCount)) break;
 		}
+
+		cout << generatedCount << "/" << (R - FR + 1) * (C - FC + 1) << " CELLS COMPLETED\n";
 
 		return res;
 	}
