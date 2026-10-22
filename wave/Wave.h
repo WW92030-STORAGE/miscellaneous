@@ -9,17 +9,14 @@
 #include <queue>
 #include <utility>
 #include <algorithm>
-#include "Counter.h"
 	
 template <typename T>
 	std::vector<std::vector<T>> sliceMatrix(std::vector<std::vector<T>>& v, int sr, int sc, int R, int C) {
 		std::vector<std::vector<T>> res(R, std::vector<T>(C));
 		for (int i = 0; i < R; i++) {
-			int r = i + sr;
-			if (r >= v.size()) break;
+			int r = (i + sr) % v.size();
 			for (int j = 0; j < C; j++) {
-				int c = j + sc;
-				if (c >= v[r].size()) break;
+				int c = (j + sc) % v[r].size();
 				res[i][j] = v[r][c];
 			}
 		}
@@ -48,6 +45,17 @@ template <typename T>
 				res += std::to_string(v[r][c]);
 			}
 			res.push_back(']');
+		}
+		return res;
+	}
+
+template <typename T>
+	std::vector<std::vector<T>> rotate(std::vector<std::vector<T>>& v) {
+		int SR = v.size();
+		int SC = v[0].size();
+		std::vector<std::vector<T>> res(SC, std::vector<T>(SR));
+		for (int r = 0; r < SR; r++) {
+			for (int c = 0; c < SC; c++) res[c][r] = v[r][SC - 1-  c];
 		}
 		return res;
 	}
@@ -91,7 +99,7 @@ struct WFC {
 		}
 	}
 
-	void init(int fr = 3, int fc = 3) {
+	void init(int fr = 3, int fc = 3, bool rotations = 0, bool loop = 0, bool verbose = 0) {
 		int SR = spawn.size();
 		int SC = spawn[0].size();
 
@@ -100,17 +108,22 @@ struct WFC {
 
 		if (SR < FR || SC < FC) return;
 
-		Counter<std::vector<std::vector<T>>> cnts;
+		std::map<std::vector<std::vector<T>>, int> cnts;
 
-		for (int r = 0; r <= SR - FR; r++) {
-			for (int c = 0; c <= SC - FC; c++) {
-				std::vector<std::vector<T>> subgrid = sliceMatrix<T>(spawn, r, c, FR, FC);
-				cnts.push(subgrid);
+		for (int i = 0; i < 4; i++) {
+
+			for (int r = 0; r <= SR - (loop ? 1 : FR); r++) {
+				for (int c = 0; c <= SC - (loop ? 1 : FC); c++) {
+					std::vector<std::vector<T>> subgrid = sliceMatrix<T>(spawn, r, c, FR, FC);
+					cnts[subgrid]++;
+				}
 			}
+			if (!rotations) break;
+			spawn = rotate<T>(spawn);
 		}
 
 		counts.clear();
-		for (auto p : cnts.counter) counts.push_back(p);
+		for (auto p : cnts) counts.push_back(p);
 		int P = counts.size();
 		// Process neighbors. neighbors[i][j] is the set of possible neighbors in the (dx[j], dy[j]) direction of pattern i. 
 		// Essentially, the set of neighbors taken by a region covering all but one row or column of pattern i, and arbitrary cells in the last column.
@@ -148,6 +161,8 @@ struct WFC {
 				}
 			}
 		}
+
+		if (!verbose) return;
 		for (int i = 0; i < P; i++) {
 			cout << disp<T>(counts[i].first) << endl;
 			cout << i << ": \n";
@@ -275,7 +290,6 @@ struct WFC {
 		for (int fr = 0; fr < FR; fr++) {
 			for (int fc = 0; fc < FC; fc++) res[fr + xr][fc + xc] = counts[chosenIndex].first[fr][fc];
 		}
-		cout << xr << " " << xc << "\n";
 
 		for (int i = 0; i < P; i++) possible[xr][xc][i] = (i == chosenIndex);
 
@@ -319,7 +333,7 @@ struct WFC {
 					}
 				}
 			}
-		}
+		} // end queue loop
 
 		return true;
 	}
