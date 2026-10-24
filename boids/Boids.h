@@ -15,6 +15,11 @@ BoidsNum rand01() {
 	return (BoidsNum)(rand()) * denom;
 }
 
+bool fzero(BoidsNum b) {
+	constexpr BoidsNum eps = 1e-12;
+	return (b > -eps && b < eps);
+}
+
 struct Vec2 {
 	BoidsNum x = 0;
 	BoidsNum y = 0;
@@ -51,6 +56,21 @@ struct Vec2 {
 	}
 
 	BoidsNum length() { return sqrt(normsquared()); }
+
+	Vec2 normalized() {
+		BoidsNum len = sqrt(normsquared());
+		if (fzero(len)) return {x, y};
+		BoidsNum inv = 1.0 / len;
+		return {x * inv, y * inv};
+	}
+
+	Vec2 rect2polar() {
+		return {length(), atan2(y, x)};
+	}
+
+	Vec2 polar2rect() {
+		return {x * cos(y), x * sin(y)};
+	}
 
 	std::string to_string() {
 		return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";

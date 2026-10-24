@@ -5,7 +5,7 @@ from PIL import Image
 
 BUF_IN = "wave.out" # Where to read the buffer from
 
-COLOR = (255, 255, 255)
+COLORS = [(0, 0, 0), (255, 255, 255), (255, 0, 0), (255, 255, 0), (0, 255, 0), (0, 255, 255), (0, 0, 255), (255, 0, 255)]
 
 def render(INPUT, RESOLUTION = 16):
 	file = open(INPUT, 'r')
@@ -25,10 +25,9 @@ def render(INPUT, RESOLUTION = 16):
 	for y in range(H):
 		for x in range(W):
 			c = restofdat[index]
-			VALUE = c
-			r = int(COLOR[0] * VALUE)
-			g = int(COLOR[1] * VALUE)
-			b = int(COLOR[2] * VALUE)
+			r = int(COLORS[c][0])
+			g = int(COLORS[c][1])
+			b = int(COLORS[c][2])
 			a = 255
 			for i in range(RESOLUTION):
 				for j in range(RESOLUTION):

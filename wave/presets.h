@@ -48,4 +48,40 @@ std::vector<std::vector<bool>> infinity() {
 	return spawnMap;
 }
 
+std::vector<std::vector<bool>> diamond() {
+	std::vector<std::vector<bool>> spawnMap({
+		{0, 0, 0, 0, 1, 0, 0, 0},
+		{0, 0, 0, 1, 0, 1, 0, 0},
+		{0, 0, 1, 0, 0, 0, 1, 0},
+		{0, 1, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0},
+		{0, 1, 0, 0, 0, 0, 0, 1},
+		{0, 0, 1, 0, 0, 0, 1, 0},
+		{0, 0, 0, 1, 0, 1, 0, 0},
+	});
+	return spawnMap;
+}
+
+// use a 2x2 spawn area
+std::vector<std::vector<bool>> tinyassgrid() {
+	std::vector<std::vector<bool>> spawnMap({
+		{0, 0, 0, 0},
+		{0, 1, 1, 1},
+		{0, 1, 0, 1},
+		{0, 1, 1, 1},
+	});
+	return spawnMap;
+}
+
+// use a 2x2 spawn area
+std::vector<std::vector<int16_t>> tinyasstricolor() {
+	std::vector<std::vector<int16_t>> spawnMap({
+		{0, 0, 0, 0},
+		{0, 1, 1, 1},
+		{0, 1, 2, 1},
+		{0, 1, 1, 1},
+	});
+	return spawnMap;
+}
+
 }
