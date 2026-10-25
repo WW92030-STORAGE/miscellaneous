@@ -112,6 +112,7 @@ struct Boids {
 		boids.push_back(Boid{v});
 	}
 
+	// Based on https://people.ece.cornell.edu/land/courses/ece4760/labs/s2021/Boids/Boids.html
 	void update() {
 		BoidsNum protRsq = protR * protR;
 		BoidsNum visRsq = visR * visR;
