@@ -9,11 +9,12 @@ void doBool() {
 	wfc.setseed(0);
 	wfc.spawn = spawnMap;
 	wfc.init(3, 3, false, true, false);
+	cout << "PATTERNS: " << wfc.counts.size() << "\n";
 
 	int R = 32;
 	int C = 32;
 
-	auto x = wfc.generate(R, C, true);
+	auto x = wfc.generate(R, C, false);
 
 	cout << WFCUtils::buffer(x);
 
@@ -25,7 +26,8 @@ void doInt16() {
 	WFC<int16_t> wfc;
 	wfc.setseed(time(0));
 	wfc.spawn = spawnMap;
-	wfc.init(3, 3, false, true, false);
+	wfc.init(2, 2, false, true, false);
+	cout << "PATTERNS: " << wfc.counts.size() << "\n";
 
 	int R = 64;
 	int C = 64;

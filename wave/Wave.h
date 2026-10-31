@@ -10,7 +10,10 @@
 #include <utility>
 #include <algorithm>
 #include <iostream>
-	
+
+// Stronger WFC implementation (as opposed to the naive (area * patterns) from before)
+// based on https://discourse.threejs.org/t/building-a-high-performance-wave-function-collapse-solver-for-three-js/81704
+
 template <typename T>
 	std::vector<std::vector<T>> sliceMatrix(std::vector<std::vector<T>>& v, int sr, int sc, int R, int C) {
 		std::vector<std::vector<T>> res(R, std::vector<T>(C));
@@ -208,7 +211,8 @@ struct WFC {
 		return true;
  	}
 
-	bool singleAttempt(std::vector<std::vector<T>>& res, std::vector<std::vector<std::vector<bool>>>& possible, std::vector<std::vector<bool>>& generated, int& generatedCount, bool verbose = false) {
+	// Updated to use amortized arrays of the log-sum and the denominator (counts)
+	bool singleAttempt(std::vector<std::vector<T>>& res, std::vector<std::vector<std::vector<bool>>>& possible, std::vector<std::vector<bool>>& generated, int& generatedCount, std::vector<std::vector<int>>& count_, std::vector<std::vector<double>>& countlog_, bool verbose = false) {
 		int R = res.size();
 		int C = res[0].size();
 		int P = counts.size();
@@ -226,39 +230,17 @@ struct WFC {
 		}
 
 		std::shuffle(randomOrder.begin(), randomOrder.end(), prng);
-		
+
 		for (int ii = 0; ii < randomOrder.size(); ii++) {
 			int r = randomOrder[ii].first;
 			int c = randomOrder[ii].second;
 				if (generated[r][c]) continue;
-				int len = 0; 
-				for (int i = 0; i < P; i++) len += possible[r][c][i];
-				if (len <= 0) {
+				// entropy = [1/count_] * countlog_ - count_
+				if (count_[r][c] <= 0) {
 					if (verbose) std::cout << "ERROR(len)!!! " << r << " " << c << "\n";
 					return false;
 				}
-				if (len <= 1) { // forced
-					xr = r;
-					xc = c;
-					break;
-				}
-				double entropy = 0;
-				// compute entropy
-				int denom = 0;
-				for (int i = 0; i < P; i++) {
-					if (possible[r][c][i]) denom += counts[i].second;
-				}
-				if (denom <= 0) {
-					if (verbose) std::cout << "ERROR(denom)!!! " << r << " " << c << "\n";
-					return false; // contradiction
-				}
-				double trueDenom = 1.0 / denom;
-				for (int i = 0; i < P; i++) {
-					if (possible[r][c][i]) {
-						double prob = counts[i].second * trueDenom;
-						entropy -= prob * log(prob);
-					}
-				}
+				double entropy = -(countlog_[r][c] / count_[r][c] - count_[r][c]);
 				// cout << r << " " << c << " " << entropy << "\n";
 				if (entropy < minEntropy) {
 					minEntropy = entropy;
@@ -320,7 +302,13 @@ struct WFC {
 				for (int i = 0; i < P; i++) {
 					bool original = possible[pr][pc][i];
 					possible[pr][pc][i] = possible[pr][pc][i] & computedPossible[i];
-					if (possible[pr][pc][i] != original) reduced = true;
+					if (possible[pr][pc][i] != original) {
+						reduced = true;
+						// also diminish the count and countlog values
+						int cc = counts[i].second;
+						count_[pr][pc] -= cc;
+						countlog_[pr][pc] -= cc * log(cc);
+					}
 				}
 				if (reduced) {
 					q.push({pr, pc});
@@ -344,11 +332,35 @@ struct WFC {
 		std::vector<std::vector<std::vector<bool>>> possible(R - FR + 1, std::vector<std::vector<bool>>(C - FC + 1, std::vector<bool>(P, 1)));
 		std::vector<std::vector<bool>> generated(R - FR + 1, std::vector<bool>(C - FC + 1, 0));
 
+		/*
+		
+		entropy = sum[probability * log(probability)]. probability = count / denom so
+		entropy = sum[(count/denom) * log(count/denom)] = [1/denom]sum(count * [log(count) - log(denom)])
+		= [1/denom]sum(count * log(count)) - [1/denom]sum(count * log(denom)). denom = sum(count) thus 
+		entropy = [1/denom]sum(count * log(count)) - log(denom)
+
+		therefore we only need to keep a total count_ = sum(count) and a countlog_ = sum(count * log(count)) 
+		since entropy = [1/count_] * countlog_ - count_
+
+		std::vector<std::pair<std::vector<std::vector<T>>, int>> counts;
+		
+		*/
+		double commonCount = 0;
+		double commonCountLog = 0;
+
+		for (int i = 0; i < P; i++) {
+			commonCount += counts[i].second;
+			commonCountLog += counts[i].second * log(counts[i].second);
+		}
+
+		std::vector<std::vector<int>> count_(R - FR + 1, std::vector<int>(C - FC + 1, commonCount));
+		std::vector<std::vector<double>> countlog_(R - FR + 1, std::vector<double>(C - FC + 1, commonCountLog));
+
 		int totalAtts = (R - FR + 1) * (C - FC + 1);
 
 		for (int attempt = 0; attempt < totalAtts; attempt++) {
-			if (!singleAttempt(res, possible, generated, generatedCount, verbose)) break;
-			if (verbose) std::cout << "ATTEMPT " << (attempt + 1) << "/" << totalAtts << " DONE\n";
+			if (!singleAttempt(res, possible, generated, generatedCount, count_, countlog_, verbose)) break;
+			if (verbose && (attempt % 16) == 0) std::cout << "ATTEMPT " << (attempt + 1) << "/" << totalAtts << " DONE\n";
 		}
 
 		if (verbose) std::cout << generatedCount << "/" << (R - FR + 1) * (C - FC + 1) << " CELLS COMPLETED\n";
