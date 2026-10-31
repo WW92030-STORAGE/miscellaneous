@@ -70,7 +70,7 @@ struct WFC {
 	int FR = 0;
 	int FC = 0;
 
-	std::vector<std::pair<std::vector<std::vector<T>>, int>> counts;
+	std::vector<std::pair<std::pair<int, int>, int>> counts;
 
 	std::mt19937 prng;
 
@@ -121,14 +121,16 @@ struct WFC {
 
 		if (SR < FR || SC < FC) return;
 
-		std::map<std::vector<std::vector<T>>, int> cnts;
+		std::map<std::pair<int, int>, int> cnts;
+		std::map<std::vector<std::vector<T>>, std::pair<int, int>> principal;
 
 		for (int i = 0; i < 4; i++) {
 
 			for (int r = 0; r <= SR - (loop ? 1 : FR); r++) {
 				for (int c = 0; c <= SC - (loop ? 1 : FC); c++) {
 					std::vector<std::vector<T>> subgrid = sliceMatrix<T>(spawn, r, c, FR, FC);
-					cnts[subgrid]++;
+					if (principal.find(subgrid) == principal.end()) principal[subgrid] = {r, c};
+					cnts[principal[subgrid]]++;
 				}
 			}
 			if (!rotations) break;
@@ -145,7 +147,7 @@ struct WFC {
 		generateMasks();
 
 		for (int p = 0; p < P; p++) {
-			auto pattern = counts[p].first;
+			auto pattern = sliceMatrix(spawn, counts[p].first.first, counts[p].first.second, FR, FC);
 			std::vector<std::vector<T>> slicies(FR, std::vector<T>(FC));
 			for (int d = 0; d < 4; d++) {
 				
@@ -169,15 +171,19 @@ struct WFC {
 				}
 
 				for (int q = 0; q < P; q++) {
-					auto qattern = counts[q].first;
+					auto location = counts[q].first;
+					auto qattern = sliceMatrix(spawn, location.first, location.second, FR, FC);
 					if (match(slicies, qattern, masks[d])) neighbors[p][d].push_back(q);
 				}
 			}
 		}
 
+		masks.clear();
+
 		if (!verbose) return;
 		for (int i = 0; i < P; i++) {
-			std::cout << disp<T>(counts[i].first) << endl;
+			auto pattern = sliceMatrix(spawn, counts[i].first.first, counts[i].first.second, FR, FC);
+			std::cout << disp<T>(pattern) << endl;
 			std::cout << i << ": \n";
 			for (int d = 0; d < 4; d++) {
 				std::cout << "> " << d << ": ";
@@ -272,7 +278,8 @@ struct WFC {
 		generated[xr][xc] = 1;
 		generatedCount++;
 		for (int fr = 0; fr < FR; fr++) {
-			for (int fc = 0; fc < FC; fc++) res[fr + xr][fc + xc] = counts[chosenIndex].first[fr][fc];
+			auto pattern = sliceMatrix(spawn, counts[chosenIndex].first.first, counts[chosenIndex].first.second, FR, FC);
+			for (int fc = 0; fc < FC; fc++) res[fr + xr][fc + xc] = pattern[fr][fc];
 		}
 
 		for (int i = 0; i < P; i++) possible[xr][xc][i] = (i == chosenIndex);
@@ -375,7 +382,10 @@ struct WFC {
 
 	std::string dispCounts() {
 		std::string res = "";
-		for (auto p : counts) res += disp(p.first) + "\n> " + std::to_string(p.second) + "\n\n";
+		for (auto p : counts) {
+			auto pattern = sliceMatrix(spawn, p.first.first, p.first.second, FR, FC);
+			res += disp(pattern) + "\n> " + std::to_string(p.second) + "\n\n";
+		}
 		return res;
 	}
 };
