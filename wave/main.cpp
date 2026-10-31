@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 #include "Wave.h"
-#include "presets.h"
+#include "WFCPresets.h"
 
 void doBool() {
 	auto spawnMap = WFCPresets::diamond();

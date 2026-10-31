@@ -1,3 +1,6 @@
+#ifndef WFCPRESETS_H_NORMALEXISTING
+#define WFCPRESETS_H_NORMALEXISTING
+
 #include <vector>
 
 namespace WFCPresets {
@@ -85,3 +88,5 @@ std::vector<std::vector<int16_t>> tinyasstricolor() {
 }
 
 }
+
+#endif
