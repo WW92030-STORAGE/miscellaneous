@@ -5,6 +5,15 @@
 
 namespace WFCPresets {
 
+std::vector<std::vector<int16_t>> boolmat2int16(std::vector<std::vector<bool>> v) {
+  std::vector<std::vector<int16_t>> res;
+  for (int i = 0; i < v.size(); i++) {
+    res.push_back(std::vector<int16_t>());
+    for (int j = 0; j < v[i].size(); j++) res[i].push_back(v[i][j]);
+  }
+  return res;
+}
+
 // Most of these presets are pulled from/based on either the official WFC repo
 
 std::vector<std::vector<bool>> square() {
