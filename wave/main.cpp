@@ -6,25 +6,18 @@ using namespace std;
 void doBool() {
 	auto spawnMap = WFCPresets::sun();
 	WFC<bool> wfc;
-	wfc.setseed(time(0));
+	wfc.setseed(0);
 	wfc.spawn = spawnMap;
 	wfc.init(3, 3, false, true, false);
 
-	int R = 64;
-	int C = 64;
+	int R = 32;
+	int C = 32;
 
-	auto x = wfc.generate(R, C, false);
+	auto x = wfc.generate(R, C, true);
 
 	cout << WFCUtils::buffer(x);
 
 	return;
-
-	auto spawnMap2 = WFCPresets::square();
-	wfc.spawn = spawnMap2;
-	wfc.init(3, 3, false, true, false);
-	x = wfc.generate(R, C, false);
-
-	cout << WFCUtils::buffer(x);
 }
 
 void doInt16() {

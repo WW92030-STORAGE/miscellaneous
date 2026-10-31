@@ -71,6 +71,15 @@ struct WFC {
 
 	std::mt19937 prng;
 
+	void setseed(uint64_t sed) {
+		prng = std::mt19937(sed);
+	}
+
+	int randint(int x) {
+		std::uniform_int_distribution<int> distrib(0.0, x - 1);
+		return distrib(prng);
+	}
+
 	const int dx[4] = {1, 0, -1, 0};
 	const int dy[4] = {0, 1, 0, -1};
 
@@ -175,17 +184,6 @@ struct WFC {
 		}
 	}
 
-	void setseed(uint64_t sed) {
-		prng = std::mt19937(sed);
-	}
-
-	int randint(int x) {
-		std::uniform_int_distribution<int> distrib(0.0, x - 1);
-		return distrib(prng);
-	}
-
-	
-
 	int randomIndex(std::vector<int>& v) {
 		int sum = 0;
 		for (auto i : v) sum += i;
@@ -228,7 +226,7 @@ struct WFC {
 		}
 
 		std::shuffle(randomOrder.begin(), randomOrder.end(), prng);
-
+		
 		for (int ii = 0; ii < randomOrder.size(); ii++) {
 			int r = randomOrder[ii].first;
 			int c = randomOrder[ii].second;
@@ -244,6 +242,7 @@ struct WFC {
 					xc = c;
 					break;
 				}
+				double entropy = 0;
 				// compute entropy
 				int denom = 0;
 				for (int i = 0; i < P; i++) {
@@ -254,7 +253,6 @@ struct WFC {
 					return false; // contradiction
 				}
 				double trueDenom = 1.0 / denom;
-				double entropy = 0;
 				for (int i = 0; i < P; i++) {
 					if (possible[r][c][i]) {
 						double prob = counts[i].second * trueDenom;
@@ -346,8 +344,11 @@ struct WFC {
 		std::vector<std::vector<std::vector<bool>>> possible(R - FR + 1, std::vector<std::vector<bool>>(C - FC + 1, std::vector<bool>(P, 1)));
 		std::vector<std::vector<bool>> generated(R - FR + 1, std::vector<bool>(C - FC + 1, 0));
 
-		for (int attempt = 0; attempt < (R - FR + 1) * (C - FC + 1); attempt++) {
+		int totalAtts = (R - FR + 1) * (C - FC + 1);
+
+		for (int attempt = 0; attempt < totalAtts; attempt++) {
 			if (!singleAttempt(res, possible, generated, generatedCount, verbose)) break;
+			if (verbose) std::cout << "ATTEMPT " << (attempt + 1) << "/" << totalAtts << " DONE\n";
 		}
 
 		if (verbose) std::cout << generatedCount << "/" << (R - FR + 1) * (C - FC + 1) << " CELLS COMPLETED\n";
