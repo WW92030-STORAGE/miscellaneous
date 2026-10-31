@@ -234,18 +234,21 @@ struct WFC {
 		for (int ii = 0; ii < randomOrder.size(); ii++) {
 			int r = randomOrder[ii].first;
 			int c = randomOrder[ii].second;
-				if (generated[r][c]) continue;
-				// entropy = [1/count_] * countlog_ - count_
-				if (count_[r][c] <= 0) {
-					if (verbose) std::cout << "ERROR(len)!!! " << r << " " << c << "\n";
-					return false;
-				}
-				double entropy = -(countlog_[r][c] / count_[r][c] - count_[r][c]);
-				// cout << r << " " << c << " " << entropy << "\n";
-				if (entropy < minEntropy) {
-					minEntropy = entropy;
-					xr = r;
-					xc = c;
+			if (generated[r][c]) continue;
+			// entropy = -( [1/count_] * countlog_ - log(count_))
+			if (count_[r][c] <= 0) {
+				if (verbose) std::cout << "ERROR(len)!!! " << r << " " << c << "\n";
+				return false;
+			}
+			double entropy = -(countlog_[r][c] / count_[r][c] - log(count_[r][c]));
+			// cout << r << " " << c << " " << entropy << "\n";
+			if (entropy < minEntropy) {
+				minEntropy = entropy;
+				xr = r;
+				xc = c;
+			}
+				if (entropy <= 0) {
+
 				}
 		}
 		// end entropy pick
@@ -340,7 +343,9 @@ struct WFC {
 		entropy = [1/denom]sum(count * log(count)) - log(denom)
 
 		therefore we only need to keep a total count_ = sum(count) and a countlog_ = sum(count * log(count)) 
-		since entropy = [1/count_] * countlog_ - count_
+		since entropy = [1/count_] * countlog_ - log(count_)
+
+		well actually entropy is -1 times that but yeah basically
 
 		std::vector<std::pair<std::vector<std::vector<T>>, int>> counts;
 		

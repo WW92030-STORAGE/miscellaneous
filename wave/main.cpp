@@ -4,15 +4,14 @@ using namespace std;
 #include "WFCPresets.h"
 
 void doBool() {
-	auto spawnMap = WFCPresets::sun();
+	auto spawnMap = WFCPresets::infinity();
 	WFC<bool> wfc;
-	wfc.setseed(0);
+	wfc.setseed(time(0));
 	wfc.spawn = spawnMap;
 	wfc.init(3, 3, false, true, false);
-	cout << "PATTERNS: " << wfc.counts.size() << "\n";
 
-	int R = 32;
-	int C = 32;
+	int R = 64;
+	int C = 64;
 
 	auto x = wfc.generate(R, C, false);
 
@@ -27,7 +26,6 @@ void doInt16() {
 	wfc.setseed(time(0));
 	wfc.spawn = spawnMap;
 	wfc.init(2, 2, false, true, false);
-	cout << "PATTERNS: " << wfc.counts.size() << "\n";
 
 	int R = 64;
 	int C = 64;
