@@ -9,6 +9,7 @@
 #include <queue>
 #include <utility>
 #include <algorithm>
+#include <iostream>
 	
 template <typename T>
 	std::vector<std::vector<T>> sliceMatrix(std::vector<std::vector<T>>& v, int sr, int sc, int R, int C) {
@@ -164,12 +165,12 @@ struct WFC {
 
 		if (!verbose) return;
 		for (int i = 0; i < P; i++) {
-			cout << disp<T>(counts[i].first) << endl;
-			cout << i << ": \n";
+			std::cout << disp<T>(counts[i].first) << endl;
+			std::cout << i << ": \n";
 			for (int d = 0; d < 4; d++) {
-				cout << "> " << d << ": ";
-				for (auto x : neighbors[i][d]) cout << x << " ";
-				cout << endl;
+				std::cout << "> " << d << ": ";
+				for (auto x : neighbors[i][d]) std::cout << x << " ";
+				std::cout << endl;
 			}
 		}
 	}
@@ -328,7 +329,7 @@ struct WFC {
 					bool hasP = false;
 					for (auto x : possible[pr][pc]) hasP |= x;
 					if (!hasP) {
-						if (verbose) cout << "ERROR(propagation)" << pr << " " << pc << "\n";
+						if (verbose) std::cout << "ERROR(propagation)" << pr << " " << pc << "\n";
 						return false;
 					}
 				}
@@ -349,7 +350,7 @@ struct WFC {
 			if (!singleAttempt(res, possible, generated, generatedCount, verbose)) break;
 		}
 
-		if (verbose) cout << generatedCount << "/" << (R - FR + 1) * (C - FC + 1) << " CELLS COMPLETED\n";
+		if (verbose) std::cout << generatedCount << "/" << (R - FR + 1) * (C - FC + 1) << " CELLS COMPLETED\n";
 
 		return res;
 	}

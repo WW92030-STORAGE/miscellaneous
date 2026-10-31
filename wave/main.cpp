@@ -4,7 +4,7 @@ using namespace std;
 #include "WFCPresets.h"
 
 void doBool() {
-	auto spawnMap = WFCPresets::diamond();
+	auto spawnMap = WFCPresets::sun();
 	WFC<bool> wfc;
 	wfc.setseed(time(0));
 	wfc.spawn = spawnMap;
@@ -14,6 +14,15 @@ void doBool() {
 	int C = 64;
 
 	auto x = wfc.generate(R, C, false);
+
+	cout << WFCUtils::buffer(x);
+
+	return;
+
+	auto spawnMap2 = WFCPresets::square();
+	wfc.spawn = spawnMap2;
+	wfc.init(3, 3, false, true, false);
+	x = wfc.generate(R, C, false);
 
 	cout << WFCUtils::buffer(x);
 }
