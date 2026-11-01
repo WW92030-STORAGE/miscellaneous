@@ -29,8 +29,8 @@ struct DoomFire {
 	double LEFT_MARGIN = 1.0 / 3.0;
 	double RIGHT_MARGIN = 1.0 / 3.0;
 	double DECAY = 2.0 / 3.0;
-	DoomFireConsts::PARTICLE** particles;
-	bool** sources;
+	std::vector<std::vector<DoomFireConsts::PARTICLE>> particles;
+	std::vector<std::vector<bool>> sources;
 	std::mt19937 prng;
 	
 
@@ -38,12 +38,8 @@ struct DoomFire {
 
 	void init(uint64_t seed = 0) {
 		initPRNG(seed);
-		particles = new DoomFireConsts::PARTICLE*[R];
-		sources = new bool*[R];
-		for (int i = 0; i < R; i++) {
-			particles[i] = new DoomFireConsts::PARTICLE[C];
-			sources[i] = new bool[C];
-		}
+		particles = std::vector<std::vector<DoomFireConsts::PARTICLE>>(R, std::vector<DoomFireConsts::PARTICLE>(C, 0));
+		sources = std::vector<std::vector<bool>>(R, std::vector<bool>(C, 0));
 		defaultSources();
 		clear();
 	}
@@ -102,12 +98,7 @@ struct DoomFire {
 			for (int c = 0; c < C; c++) particles[r][c] = other.particles[r][c];
 		}
 	}
-
-	~DoomFire() {
-		for (int r = 0; r < R; r++) delete[] particles[r];
-		delete[] particles;
-	}
-
+	
 	void clear() {
 		for (int i = 0; i < R; i++) {
 			for (int j = 0; j < C; j++) particles[i][j] = sources[i][j] * SRC;
