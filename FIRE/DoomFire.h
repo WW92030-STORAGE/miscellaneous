@@ -24,8 +24,8 @@ namespace DoomFireConsts {
 struct DoomFire {
 	uint64_t SEED = 0;
 	DoomFireConsts::PARTICLE SRC = 36;
-	int R = 16;
-	int C = 16;
+	int R = 4;
+	int C = 4;
 	double LEFT_MARGIN = 1.0 / 3.0;
 	double RIGHT_MARGIN = 1.0 / 3.0;
 	double DECAY = 2.0 / 3.0;
@@ -98,7 +98,7 @@ struct DoomFire {
 			for (int c = 0; c < C; c++) particles[r][c] = other.particles[r][c];
 		}
 	}
-	
+
 	void clear() {
 		for (int i = 0; i < R; i++) {
 			for (int j = 0; j < C; j++) particles[i][j] = sources[i][j] * SRC;
