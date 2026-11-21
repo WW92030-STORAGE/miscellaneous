@@ -24,13 +24,27 @@ struct BouncingScreensaver {
 		LH = lh;
 	}
 
-	void step() {
-		if (dx == 1 && x >= BW - LW) dx = -1;
-		else if (dx == -1 && x <= 0) dx = 1;
-		if (dy == 1 && y >= BH - LH) dy = -1;
-		else if (dy == -1 && y <= 0) dy = 1;
+	bool step() {
+		bool ret = 0;
+		if (dx == 1 && x >= BW - LW) {
+			ret = 1;
+			dx = -1;
+		}
+		else if (dx == -1 && x <= 0) {
+			ret = 1;
+			dx = 1;
+		}
+		if (dy == 1 && y >= BH - LH) {
+			ret = 1;
+			dy = -1;
+		}
+		else if (dy == -1 && y <= 0) {
+			ret = 1;
+			dy = 1;
+		}
 		x += dx;
 		y += dy;
+		return ret;
 	}
 };
 
