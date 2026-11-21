@@ -6,7 +6,6 @@
 
 // Something to model a bouncing image e.g. a bouncing DVD logo.
 
-template <typename T>
 struct BouncingScreensaver {
 	int BW = 64;
 	int BH = 32;

@@ -1,0 +1,65 @@
+    waveFunctionCollapse.setseed(rand());
+    waveFunctionCollapse.spawn = WFCPresets::boolmat2int16(WFCPresets::sun());
+
+#include <Wave.h>
+#include <WFCPresets.h>
+
+constexpr int WFC_SPAWNS = 6; // one more than the highest case
+
+// use sun() for stress testing
+std::pair<std::vector<std::vector<int16_t>>, int> pickSpawnArea(int i) {
+  switch (i) {
+    case 1: return {WFCPresets::boolmat2int16(WFCPresets::sun()), 3};
+    case 2: return {WFCPresets::boolmat2int16(WFCPresets::infinity()), 3};
+    case 3: return {WFCPresets::boolmat2int16(WFCPresets::diamond()), 3};
+    case 4: return {WFCPresets::boolmat2int16(WFCPresets::tinyassgrid()), 2};
+    case 5: return {WFCPresets::tinyasstricolor(), 2};
+  }
+  return {WFCPresets::boolmat2int16(WFCPresets::square()), 3};
+}
+
+WFC<int16_t> waveFunctionCollapse;
+
+
+// Runner
+
+void runWave() {
+  int x = rng() * WFC_SPAWNS;
+  std::pair<std::vector<std::vector<int16_t>>, int> spawnArea = pickSpawnArea(x);
+  std::vector<std::vector<int16_t>> spawnMap = spawnArea.first;
+  int regionSize = spawnArea.second;
+  if (spawnMap.size() <= 0) return;
+  if (regionSize <= 0) return;
+  cout << "WFC: spawn " << x << " | region size " << regionSize << "\n";
+
+  waveFunctionCollapse.spawn = spawnMap;
+  waveFunctionCollapse.init(regionSize, regionSize, false, true, false); 
+
+  std::cout << "Begin WFC generation\n";
+
+	int R = 36;
+	int C = 32;
+
+  std::vector<uint16_t> colors = simpleRainbow();
+  std::random_shuffle(colors.begin() + 2, colors.end());
+
+	std::vector<std::vector<int16_t>> drawing = waveFunctionCollapse.generate(R, C, true);
+  matrixpanel->fillScreenRGB888(0, 0, 0);
+  for (int offset = 0; offset < 128; offset += 128 - R) {
+
+  for (int r = 0; r < R; r++) {
+    for (int c = 0; c < C; c++) {
+      int col = iclamp(drawing[r][c], 0, 7);
+      if (R <= 32) {
+        for (int dx = 0; dx < 2; dx++) {
+          for (int dy = 0; dy < 2; dy++) matrixpanel->drawPixel((r<<1) + dx + offset - R, (c<<1) + dy, colors[col]);
+        }
+      }
+      else matrixpanel->drawPixel(r + offset, c, colors[col]);
+    }
+  }
+  
+  }
+
+  delay(1000);
+}
