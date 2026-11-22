@@ -1,6 +1,23 @@
 # A program to render the output of Scene::buffer_data() to an image
 
 from PIL import Image
+
+"""
+
+The buffer is in the following format:
+[WIDTH, HEIGHT]
+<color>,<color>,<color> ... <color>,
+<color>,<color>...
+...
+...
+
+line 1 is the dimensions, brackets and commas requried
+The next (HEIGHT) lines is a comma separated list of (WIDTH) integers, each representing a color hex code. 
+Each line must have a trailing comma.
+
+"""
+
+
 # Important constants
 
 INPUT = "BUFFER" # Where to read the buffer from
