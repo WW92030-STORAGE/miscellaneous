@@ -46,9 +46,10 @@ rm {filename}
 	with open(DIR + SH, 'w') as F:
 		F.write(bashfile)
 	
-	srcfile = f'''#include <bits/stdc++.h>
+	srcfile = f'''#include "{name.capitalize()}.h"
+#include <bits/stdc++.h>
 using namespace std;
-#include "{name.capitalize()}.h"
+
 ''' + '''
 
 int main() {
