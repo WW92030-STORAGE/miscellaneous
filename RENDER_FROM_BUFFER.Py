@@ -15,6 +15,8 @@ line 1 is the dimensions, brackets and commas requried
 The next (HEIGHT) lines is a comma separated list of (WIDTH) integers, each representing a color hex code. 
 Each line must have a trailing comma.
 
+WARNING - The format is RGBA, from highest to lowest bits. 
+
 """
 
 
