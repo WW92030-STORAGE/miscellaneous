@@ -4,9 +4,6 @@ from PIL import Image
 import numpy as np
 import cv2
 
-# Recommended to use a venv
-# e.g. source ~/Documents/VSCODE/PYTHON_VSC/bin/activate
-
 """
 
 The video format is a directory containing N + 1 files, where there are N frames.
@@ -28,6 +25,7 @@ WARNING - The format is RGBA, from highest to lowest bits.
 
 """
 
+
 def render(INPUT):
 	file = open(INPUT, 'r')
 	bufdat = file.read()
@@ -38,7 +36,7 @@ def render(INPUT):
 	W = dims[0]
 	H = dims[1]
 	
-	im = Image.new(mode = "RGBA", size = (W, H))
+	im = Image.new(mode = "RGB", size = (W, H))
 
 	restofdat = "".join(bufdat[ket+1:].splitlines())
 	restofdat = [int(i) for i in restofdat.split(",")[:-1]]
@@ -47,37 +45,31 @@ def render(INPUT):
 	for y in range(H):
 		for x in range(W):
 			c = restofdat[index]
-			r = (c>>16) % (1<<8)
-			g = (c>>8) % (1<<8)
-			b = c % (1<<8)
-			im.putpixel((x, y), (r, g, b, 1))
+			r = (c>>24) % (1<<8)
+			g = (c>>16) % (1<<8)
+			b = (c>>8) % (1<<8)
+			a = c % (1<<8)
+			im.putpixel((x, y), (r, g, b, a))
 			index += 1
 
 	file.close()
 
 	return im
 
-def generate_video(INPUT_DIR, OUTPUT, LEN, LOOPS = 1):
-	print("GENERATING", OUTPUT + "...")
-	meta = render(INPUT_DIR + "/FRAME_0")
-	video = cv2.VideoWriter(OUTPUT, cv2.VideoWriter_fourcc(*'DIVX'), 30, (meta.width, meta.height))
-	for L in range(LOOPS):
-		for i in range(LEN):
-			ren = render(INPUT_DIR + "/FRAME_" + str(i))
-			video.write(cv2.cvtColor(np.array(ren), cv2.COLOR_RGB2BGR))
+def make_gif(INPUT_DIR, OUTPUT, LEN):
+	frames = [render(INPUT_DIR + "/FRAME_" + str(i)) for i in range(LEN)]
 
-	video.release()
-	cv2.destroyAllWindows()
+	output = frames[0]
 
-	print(OUTPUT, "GENERATED")
+	PERIOD = 50
+
+	output.save(OUTPUT, format="GIF", append_images = frames[1:], save_all = True, duration = [PERIOD] * LEN, loop = 0)
 
 if __name__ == "__main__":
 	
 	INPUT_DIR = "video"
-	OUTPUT = "VIDEO"
+	OUTPUT = "VIDEO.gif"
 	lenfile = open(INPUT_DIR + "/LEN", 'r')
 
 	LEN = int(lenfile.read())
-	generate_video(INPUT_DIR, OUTPUT + ".mov", LEN)
-	# generate_video(INPUT_DIR, OUTPUT + ".mp4", LEN)
-	# generate_video(INPUT_DIR, OUTPUT + ".mpeg", LEN)
+	make_gif(INPUT_DIR, OUTPUT, LEN)
